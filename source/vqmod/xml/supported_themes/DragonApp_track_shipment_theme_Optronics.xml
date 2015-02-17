@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>DragonApp Track Shipment Support AfterShip</id>
+	<version>1.5.3.1.013</version>
+	<vqmver>2.1.7</vqmver>
+	<author>DragonApp</author>
+
+	<!-- FOR Optronics theme ONLY -->
+	<!-- FOR Optronics theme ONLY -->
+
+
+	<file name="catalog/view/theme/bt_optronics/template/common/header.tpl">
+		<operation>
+			<search position="after" error="skip"><![CDATA[</head>]]></search>
+			<add><![CDATA[
+				<div id="as-root"></div><script>(function(e,t,n){var r,i=e.getElementsByTagName(t)[0];if(e.getElementById(n))return;r=e.createElement(t);r.id=n;r.src="//apps.aftership.com/all.js";i.parentNode.insertBefore(r,i)})(document,"script","aftership-jssdk")</script>
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="catalog/view/theme/bt_optronics/template/account/order_list.tpl">
+		<operation>
+			<search position="after" error="skip"><![CDATA[
+				<b><?php echo $text_total; ?></b> <?php echo $order['total']; ?></div>
+			]]></search>
+			<add><![CDATA[
+			<div class="shipping-status">
+				<?php
+					$trackings = $order['trackings'];
+
+					foreach ($trackings as $key => $value) {
+						$track_info = explode("_", $value);
+						echo '<div id="' . $track_info[0] . '-' . $track_info[1] . '" style="white-space:nowrap;padding-bottom: 10px;">';
+						echo '<img src="image/courier/' . $track_info[0] . '.png" /> ';
+						echo '<div class="as-track-button" data-support="true" data-width="100" data-size="small" data-slug="'.trim($track_info[0]).'" data-tracking-number="'.$track_info[1].'"></div>';
+						echo '</div>';
+					}
+				?>
+			</div>
+
+			]]></add>
+		</operation>
+	</file>
+
+
+
+</modification>

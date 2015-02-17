@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>DragonApp Track Shipment Support AfterShip</id>
+	<version>1.5.3.1.013</version>
+	<vqmver>2.1.7</vqmver>
+	<author>DragonApp</author>
+
+	<!-- FOR Clearshop theme ONLY -->
+	<!-- FOR Clearshop theme ONLY -->
+
+
+	<file name="catalog/view/theme/clearshop/template/account/order_list.tpl">
+		<operation>
+			<search position="after" error="skip"><![CDATA[
+				<?php echo $header; ?>
+			]]></search>
+			<add><![CDATA[
+				<div id="as-root"></div><script>(function(e,t,n){var r,i=e.getElementsByTagName(t)[0];if(e.getElementById(n))return;r=e.createElement(t);r.id=n;r.src="//apps.aftership.com/all.js";i.parentNode.insertBefore(r,i)})(document,"script","aftership-jssdk")</script>
+			]]></add>
+		</operation>
+
+
+		<operation>
+			<search position="replace" error="skip"><![CDATA[
+				<small><?php echo $text_status; ?></small> <?php echo $order['status']; ?> <br/>
+			]]></search>
+			<add><![CDATA[
+
+			<small><?php echo $text_status; ?></small> <?php echo $order['status']; ?> <br/>
+			<?php
+					$trackings = $order['trackings'];
+
+					foreach ($trackings as $key => $value) {
+						$track_info = explode("_", $value);
+						echo '<div id="' . $track_info[0] . '-' . $track_info[1] . '" style="white-space:nowrap;padding-bottom: 10px;">';
+						echo '<img src="image/courier/' . $track_info[0] . '.png" /> ';
+						echo '<div class="as-track-button" data-support="true" data-width="100" data-size="small" data-slug="'.trim($track_info[0]).'" data-tracking-number="'.trim($track_info[1]).'"></div>';
+						echo '</div>';
+					}
+				?>
+
+			]]></add>
+		</operation>
+
+
+	</file>
+
+
+
+</modification>
