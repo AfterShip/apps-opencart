@@ -9,9 +9,7 @@ class ModelToolDaTrackShipment extends Model
 		$query = $this->db->query($q);
 
 		foreach ($query->rows as $result) {
-			if ($this->config->get('da_track_shipment_courier_status_' . $result["courier_id"])) {
 				$couriers[] = $result;
-			}
 		}
 
 		return $couriers;

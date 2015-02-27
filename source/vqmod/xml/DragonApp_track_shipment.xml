@@ -26,10 +26,8 @@
 
 					if ($q->num_rows AND trim($data['tracking_number']) != "") {
     					$courier = $q->row;
-    					$courier_id = $courier['courier_id'];
     					$slug = $courier['slug'];
     				} else {
-    				    $courier_id = 0;
     				    $slug = '';
     				}
 
@@ -39,7 +37,7 @@
 					notify 				= '" . (isset($data['notify']) ? (int)$data['notify'] : 0) . "',
 					comment 			= '" . $this->db->escape(strip_tags($data['comment'])) . "',
 					tracking_number 	= '" . $this->db->escape(strip_tags($data['tracking_number'])) . "',
-					courier_id			= '" . $this->db->escape(strip_tags($courier_id)) . "',
+					slug				= '" . $this->db->escape(strip_tags($slug)) . "',
 					date_added 			= NOW()");
 
 					if ($q->num_rows AND trim($data['tracking_number']) != "") {
@@ -122,10 +120,10 @@
 				<![CDATA[$query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added ASC LIMIT " . (int)$start . "," . (int)$limit);]]></search>
 			<add><![CDATA[
 				//Line 692
-				$query = $this->db->query("SELECT oh.`date_added`, os.`name` AS `status`, oh.`comment`, oh.`notify`, oh.`tracking_number`, dac.`courier_id`, dac.`name`, dac.`slug`, dac.`web_url`
+				$query = $this->db->query("SELECT oh.`date_added`, os.`name` AS `status`, oh.`comment`, oh.`notify`, oh.`tracking_number`, dac.`name`, dac.`slug`, dac.`web_url`
 										FROM " . DB_PREFIX . "order_history oh
 										LEFT JOIN " . DB_PREFIX . "order_status os ON oh.`order_status_id` = os.`order_status_id`
-										LEFT JOIN da_courier dac ON oh.`courier_id` = dac.`courier_id`
+										LEFT JOIN da_courier dac ON oh.`slug` = dac.`slug`
 										WHERE oh.`order_id` = '" . (int)$order_id . "'
 										AND os.`language_id` = '" . (int)$this->config->get('config_language_id') . "'
 										ORDER BY oh.date_added ASC
@@ -191,7 +189,6 @@
 			<add><![CDATA[
 				//Line 2187
 				'tracking_number' 	=> $result['tracking_number'],
-				'courier_id' 			=> $result['courier_id'],
 				'name' 			=> $result['name'],
 				'slug' 			=> $result['slug'],
 				'order_id' 	=> $this->request->get['order_id'],
@@ -297,11 +294,12 @@
 				<?php if ($this->config->get('da_track_shipment_status')) { ?>
 				<td class="left">
 					<?php
+					$username = $this->config->get('da_track_shipment_after_ship_username');
 					if ($history['tracking_number']) {
 						$tracking_numbers = explode(",", $history['tracking_number']);
 						for ($i=0;$i<count($tracking_numbers);$i++)
 						{
-						echo '<div class="as-track-button" data-support="true" data-width="100" data-size="small" data-slug="'.$history['slug'].'" data-tracking-number="'.trim($tracking_numbers[$i]).'"></div>';
+						echo '<div data-width="100">'.trim($tracking_numbers[$i]).' <a href=https://"'.$username.'.aftership.com/'.$history['slug'].'/'.trim($tracking_numbers[$i]).'">Tracking link</a></div>';
 						}
 					}
 					?>
@@ -309,7 +307,7 @@
 				</td>
 				<td class="center">
 				<?php if ($history['slug']) { ?>
-				<a href="<?php echo $history['web_url']; ?>" target="_blank"><?php echo '<img src="image/courier/'.$history['slug'].'.png" alt="" />'; ?></a>
+				<a href="<?php echo $history['web_url']; ?>" target="_blank"></a>
 				<br><a href="<?php echo $history['web_url']; ?>" target="_blank"><?php echo $history['name']; ?></a>
 				<?php } ?>
 				</td>
@@ -336,18 +334,16 @@
 	</file>
 
 
-	<file name="catalog/controller/account/order.php">
+<!-- 	<file name="catalog/controller/account/order.php">
 		<operation>
 			<search position="before"><![CDATA[
 				$this->data['orders'][] = array(
 			]]></search>
 			<add><![CDATA[
 				// line 106
-				$query = $this->db->query("SELECT dac.slug AS courier, oh.tracking_number
-				FROM  `" . DB_PREFIX . "order_history` oh, da_courier dac
-				WHERE dac.courier_id = oh.courier_id
-				AND oh.courier_id >0
-				AND oh.order_id ='".$result['order_id']."'");
+				$query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
+				FROM  `" . DB_PREFIX . "order_history` oh
+				WHERE oh.order_id ='".$result['order_id']."'");
 
 				$trackings = array();
 
@@ -373,11 +369,48 @@
                 // line 106
 				'trackings'   => array_unique($trackings),
 			]]></add>
+        </operation> -->
+
+	<file name="catalog/controller/account/order.php">
+		<operation>
+			<search position="before"><![CDATA[
+				$this->data['orders'][] = array(
+			]]></search>
+			<add><![CDATA[
+				// line 106
+				$query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
+				FROM  `" . DB_PREFIX . "order_history` oh
+				WHERE oh.order_id ='".$result['order_id']."'");
+
+				$trackings = array();
+				$username = $this->config->get('da_track_shipment_after_ship_username');
+
+				$trackings_result = $query->rows;
+				$string_tracking_numbers = '';
+
+				foreach ($trackings_result as $tracking) {
+					$tracking_number = explode(",", $tracking["tracking_number"]);
+
+					for ($i = 0; $i < count($tracking_number); $i++) {
+						if($tracking_number[$i]!=''){
+							$trackings[] = '<a href="https://'.$username.'.aftership.com/'.$tracking["courier"].'/'.trim($tracking_number[$i]).'">'.trim($tracking_number[$i]).'</a>';
+						}
+					}
+
+				}
+
+			]]></add>
+		</operation>
+
+        <operation>
+            <search position="after"><![CDATA[
+				$this->data['orders'][] = array(
+			]]></search>
+            <add><![CDATA[
+                // line 106
+				'trackings'   => implode(", ",$trackings),
+			]]></add>
         </operation>
-
-
-
-
 
         <operation>
             <search position="before"><![CDATA[
@@ -385,32 +418,53 @@
 			]]></search>
             <add><![CDATA[
 				// line 217
-				$query = $this->db->query("SELECT dac.slug AS courier, oh.tracking_number
-				FROM  `" . DB_PREFIX . "order_history` oh, da_courier dac
-				WHERE dac.courier_id = oh.courier_id
-				AND oh.courier_id >0
+				$query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
+				FROM  `" . DB_PREFIX . "order_history` oh
+				WHERE oh.slug <> ''
 				AND oh.order_id ='".$order_id."'");
 
 				$trackings = array();
 
 				$trackings_result = $query->rows;
+				$username = $this->config->get('da_track_shipment_after_ship_username');
 
 
 				foreach ($trackings_result as $tracking) {
 					$tracking_number = explode(",", $tracking["tracking_number"]);
 
 					for ($i = 0; $i < count($tracking_number); $i++) {
-						$trackings[] = $tracking["courier"]."_".trim($tracking_number[$i]);
+						if($tracking_number[$i]!=''){
+							$trackings[] = '<a href="https://'.$username.'.aftership.com/'.$tracking["courier"].'/'.trim($tracking_number[$i]).'">'.trim($tracking_number[$i]).'</a>';
+						}
 					}
 
 				}
 
-				$this->data['tracking_number'] = $trackings;
+				$this->data['tracking_number'] = implode(", ",$trackings);
 
 			]]></add>
         </operation>
 
+        <operation>
+        	<!-- this should appear twice -->
 
+            <search position="after"><![CDATA[
+				$this->language->load('account/order');
+			]]></search>
+            <add><![CDATA[
+				$this->language->load('module/da_tracking_order');
+			]]></add>
+        </operation>
+
+        <operation>
+        	<!-- this should appear twice -->
+            <search position="after"><![CDATA[
+				$this->data['text_order_id'] = $this->language->get('text_order_id');
+			]]></search>
+            <add><![CDATA[
+				$this->data['text_tracking_number'] = $this->language->get('text_tracking_number');
+			]]></add>
+        </operation>
 
 
 	</file>

@@ -28,6 +28,7 @@
 							<?php } ?>
 						</select></td>
 					</tr>
+					<!-- aftership API -->
 					<tr>
 						<td><span class="required">*</span> <?php echo $entry_key; ?></td>
 						<td><input type="text" name="da_track_shipment_after_ship_key" value="<?php echo $da_track_shipment_after_ship_key; ?>" style="width: 300px"/>
@@ -38,27 +39,36 @@
 							<?php echo $this->language->get('text_get_key'); ?>
 						</td>
 					</tr>
-				</table>
-				<h3><?php echo $entry_courier; ?></h3>
-				<table class="form">
-					<?php for ($i=0;$i<count($couriers);$i++) { ?>
+					<!-- username -->
 					<tr>
-                        <td><a href="<?php echo $couriers[$i]["web_url"]; ?>" target="_blank"><?php echo '<img src="../image/courier/'.$couriers[$i]["slug"].'.png" alt="">'; ?></a></td>
-                        <td><?php echo $couriers[$i]["name"]; ?></td>
-						<td>
-							<select name="da_track_shipment_courier_status_<?php echo $couriers[$i]['courier_id']; ?>">
-								<?php if ($da_track_shipment_courier_status[$couriers[$i]['courier_id']]) { ?>
-								<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
-								<option value="0"><?php echo $text_disabled; ?></option>
-								<?php } else { ?>
-								<option value="1"><?php echo $text_enabled; ?></option>
-								<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
-								<?php } ?>
-							</select>
+						<td><span class="required">*</span> <?php echo $entry_username; ?></td>
+						<td><input type="text" name="da_track_shipment_after_ship_username" value="<?php echo $da_track_shipment_after_ship_username; ?>" style="width: 300px"/>
+							<?php if ($error_key) { ?>
+								<span class="error"><?php echo $error_key; ?></span>
+							<?php } ?>
+							<br />
+							<?php echo $this->language->get('text_get_username'); ?>
 						</td>
 					</tr>
-					<?php } ?>
+					<tr>
+						<td valign="top"><h3><?php echo $entry_courier; ?></h3></td>
+						<td>
+							<br/>
+							<table>
+								<?php for ($i=0;$i<count($couriers);$i++) { ?>
+								<tr>
+			                        <td><?php echo $couriers[$i]["name"]; ?></td>
+								</tr>
+								<?php } ?>
+							</table>
+							<br/>
+							<div class="buttons"><a onclick="$('#form').submit();" class="button"><?php echo $button_refresh; ?></a></div>
+							<br/>
+							<?php echo $this->language->get('text_refresh'); ?>
+						</td>
+					</tr>
 				</table>
+
 			</form>
 		</div>
 	</div>

@@ -13,10 +13,11 @@ class ControllerModuleDaTrackShipment extends Controller
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->model_setting_setting->editSetting('da_track_shipment', $this->request->post);
+            $this->updateCouriers(); //update the couriers in the db
 
             $this->session->data['success'] = $this->language->get('text_success');
-
             $this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+
         }
 
         $this->data['heading_title'] = $this->language->get('heading_title');
@@ -25,6 +26,8 @@ class ControllerModuleDaTrackShipment extends Controller
         $this->data['text_disabled'] = $this->language->get('text_disabled');
 
         $this->data['entry_key'] = $this->language->get('entry_key');
+        $this->data['entry_username'] = $this->language->get('entry_username');
+
         $this->data['entry_status'] = $this->language->get('entry_status');
         $this->data['entry_courier'] = $this->language->get('entry_courier');
 
@@ -32,6 +35,8 @@ class ControllerModuleDaTrackShipment extends Controller
         $this->data['button_cancel'] = $this->language->get('button_cancel');
         $this->data['button_add_module'] = $this->language->get('button_add_module');
         $this->data['button_remove'] = $this->language->get('button_remove');
+        $this->data['button_refresh'] = $this->language->get('button_refresh');
+
 
         if (isset($this->error['warning'])) {
             $this->data['error_warning'] = $this->error['warning'];
@@ -74,6 +79,12 @@ class ControllerModuleDaTrackShipment extends Controller
         } else {
             $this->data['da_track_shipment_after_ship_key'] = $this->config->get('da_track_shipment_after_ship_key');
         }
+        //new for the username
+        if (isset($this->request->post['da_track_shipment_after_ship_username'])) {
+            $this->data['da_track_shipment_after_ship_username'] = $this->request->post['da_track_shipment_after_ship_username'];
+        } else {
+            $this->data['da_track_shipment_after_ship_username'] = $this->config->get('da_track_shipment_after_ship_username');
+        }
 
         if (isset($this->request->post['da_track_shipment_status'])) {
             $this->data['da_track_shipment_status'] = $this->request->post['da_track_shipment_status'];
@@ -83,15 +94,14 @@ class ControllerModuleDaTrackShipment extends Controller
 
         $couriers = $this->getCouriers();
         $this->data['couriers'] = $couriers;
-
-        $da_track_shipment_courier_status = array();
-
-        for ($i = 0; $i < count($couriers); $i++) {
-            $courier_status = $this->config->get('da_track_shipment_courier_status_' . $couriers[$i]["courier_id"]);
-            $da_track_shipment_courier_status[$couriers[$i]["courier_id"]] = $courier_status;
-        }
-
-        $this->data["da_track_shipment_courier_status"] = $da_track_shipment_courier_status;
+        // $da_track_shipment_courier_status = array();
+        //
+        // for ($i = 0; $i < count($couriers); $i++) {
+        //     $courier_status = $this->config->get('da_track_shipment_courier_status_' . $couriers[$i]["courier_id"]);
+        //     $da_track_shipment_courier_status[$couriers[$i]["courier_id"]] = $courier_status;
+        // }
+        //
+        // $this->data["da_track_shipment_courier_status"] = $da_track_shipment_courier_status;
 
         $this->load->model('design/layout');
 
@@ -190,18 +200,83 @@ class ControllerModuleDaTrackShipment extends Controller
 
     private function getCouriers()
     {
-        $q = "SELECT * FROM `da_courier` ORDER BY `name` ASC";
+        $q = "SELECT * FROM `da_courier`";
 
         $couriers = array();
 
         $query = $this->db->query($q);
 
         foreach ($query->rows as $result) {
+
             $couriers[] = $result;
         }
 
         return $couriers;
     }
+
+    /**
+     * Make a call for get the user couriers
+     */
+    private function updateCouriers(){
+            $couriers = $this->getAftershipCouriers();
+            if($couriers){
+                $this->deleteCouriers();
+                $this->insertCouriers($couriers);
+            }
+    }
+
+    private function getAftershipCouriers(){
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'https://api.aftership.com/v4/couriers');
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            'aftership-api-key: ' . $this->request->post['da_track_shipment_after_ship_key'] . '',
+            'Content-Type: application/json'
+        ));
+
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSLVERSION, 1);
+        $content = curl_exec($curl);
+        curl_close($curl);
+        $content = json_decode($content, true);
+        if (isset($content["meta"]["code"])) {
+            if ($content["meta"]["code"] === 200)
+                return $content["data"]["couriers"];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+    * Delete the couriers of the db
+    */
+    private function deleteCouriers(){
+        $q = "TRUNCATE TABLE `da_courier`";
+        $this->db->query($q);
+    }
+
+    /**
+    * insert the new couriers of the db
+    */
+    private function insertCouriers($json_couriers){
+
+        $query = "INSERT INTO `da_courier` (`slug`, `name`, `web_url`) VALUES";
+    //    -- (1, "ups", "UPS", "http://www.ups.com"),'
+
+        foreach ($json_couriers as $courier){
+
+            $query .=  " (\"". $courier["slug"] . "\",\"". $courier["name"] . "\",\"". $courier["web_url"] . "\"),";
+        }
+
+        $query = trim($query, ","); //remove trailing commas
+        $query .= ";";
+        $this->db->query($query);
+
+    }
+
 
 
     /**
@@ -218,7 +293,7 @@ class ControllerModuleDaTrackShipment extends Controller
         if ($query->num_rows) {
 
         } else {
-            $query_string = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `courier_id` INT(10) NOT NULL DEFAULT '0',  ADD `tracking_number` VARCHAR(255) NOT NULL,  ADD INDEX (`courier_id`), ADD INDEX (  `tracking_number` )";
+            $query_string = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `slug` varchar(255) NOT NULL DEFAULT '',  ADD `tracking_number` VARCHAR(255) NOT NULL,  ADD INDEX (`slug`), ADD INDEX (  `tracking_number` )";
 
             $this->db->query($query_string);
         }
@@ -272,6 +347,16 @@ class ControllerModuleDaTrackShipment extends Controller
         }
 
         return false;
+    }
+
+    public function debug_to_console( $data ) {
+
+        if ( is_array( $data ) )
+            $output = "<script>console.log( 'Debug Objects: " . implode( ',', $data) . "' );</script>";
+        else
+            $output = "<script>console.log( 'Debug Objects: " . $data . "' );</script>";
+
+        echo $output;
     }
 }
 
