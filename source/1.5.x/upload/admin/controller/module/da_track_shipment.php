@@ -288,9 +288,31 @@ class ControllerModuleDaTrackShipment extends Controller
         //some system user do not allow this
         //set_time_limit(0);
 
+        //add two new columns to the database
         $query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "order_history` LIKE 'tracking_number'");
 
-        if ($query->num_rows) {
+        if ($query->num_rows) { 
+            //already exist one version of aftership.
+            
+            $query2 = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "order_history` LIKE 'courier_id'");
+            
+            if ($query2->num_rows) { 
+                //exist one version previous to this one, so we have to update the tables
+
+                //first add a column name slug
+
+                $query_add_slug = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `slug` varchar(255) NOT NULL DEFAULT '',  ADD INDEX (`slug`)";
+                $this->db->query($query_add_slug);
+
+                //populate the slug column
+                $query_populate_slug = "UPDATE `". DB_PREFIX . "order_history` AS oh, `da_courier` AS da SET oh.`slug` = da.`slug` WHERE da.`courier_id` = oh.`courier_id` AND oh.`courier_id` > 0";
+                $this->db->query($query_populate_slug);
+
+                //delete the column id_courier
+                $query_delete_column = "ALTER TABLE `" . DB_PREFIX . "order_history` DROP COLUMN `courier_id`";
+                $this->db->query($query_delete_column);
+
+            }
 
         } else {
             $query_string = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `slug` varchar(255) NOT NULL DEFAULT '',  ADD `tracking_number` VARCHAR(255) NOT NULL,  ADD INDEX (`slug`), ADD INDEX (  `tracking_number` )";
@@ -298,11 +320,10 @@ class ControllerModuleDaTrackShipment extends Controller
             $this->db->query($query_string);
         }
 
-        $sql = $this->SplitSQL("../da_install/track/db.sql");
-
-        foreach ($sql as $q) {
-            $this->db->query($q);
-        }
+        $query_drop = "DROP TABLE IF EXISTS `da_courier`";
+        $this->db->query($query_drop);
+        $query_create_couriers = "CREATE TABLE IF NOT EXISTS `da_courier` (`courier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`slug` varchar(255) NOT NULL,`name` varchar(255) NOT NULL,`web_url` varchar(255) NOT NULL,PRIMARY KEY (`courier_id`),UNIQUE KEY `slug` (`slug`),KEY `name` (`name`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+        $this->db->query($query_create_couriers);
     }
 
     /**
@@ -311,6 +332,14 @@ class ControllerModuleDaTrackShipment extends Controller
      */
     public function uninstall()
     {
+
+        //delete the table da_courier
+        $query_drop =  "DROP TABLE IF EXISTS `da_courier`";
+        $this->db->query($query_drop);
+        
+        //delete the columns slug and tracking_number of order_history
+        $query_drop_columns = "ALTER TABLE `" . DB_PREFIX . "order_history` DROP COLUMN `slug`, DROP COLUMN `tracking_number`";
+        $this->db->query($query_drop_columns);
 
     }
 
