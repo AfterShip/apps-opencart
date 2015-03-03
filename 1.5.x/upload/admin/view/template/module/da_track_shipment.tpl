@@ -43,9 +43,6 @@
 					<tr>
 						<td><span class="required">*</span> <?php echo $entry_username; ?></td>
 						<td><input type="text" name="da_track_shipment_after_ship_username" value="<?php echo $da_track_shipment_after_ship_username; ?>" style="width: 300px"/>
-							<?php if ($error_key) { ?>
-								<span class="error"><?php echo $error_key; ?></span>
-							<?php } ?>
 							<br />
 							<?php echo $this->language->get('text_get_username'); ?>
 						</td>

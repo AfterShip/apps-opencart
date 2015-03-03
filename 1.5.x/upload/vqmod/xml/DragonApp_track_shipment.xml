@@ -318,7 +318,7 @@
 						$tracking_numbers = explode(",", $history['tracking_number']);
 						for ($i=0;$i<count($tracking_numbers);$i++)
 						{
-						echo '<div data-width="100"><a href=https://"'.$username.'.aftership.com/'.$history['slug'].'/'.trim($tracking_numbers[$i]).'">'.trim($tracking_numbers[$i]).'</a></div>';
+						echo '<div data-width="100"><a href="https://'.$username.'.aftership.com/'.$history['slug'].'/'.trim($tracking_numbers[$i]).'" target="_blank">'.trim($tracking_numbers[$i]).'</a></div>';
 						}
 					}
 					?>
@@ -375,9 +375,6 @@
 					for ($i = 0; $i < count($tracking_number); $i++) {
 						if($tracking_number[$i]!=''){
 							$trackings[] = array($tracking["courier"],trim($tracking_number[$i]));
-
-
-							//'<a href="https://'.$username.'.aftership.com/'.$tracking["courier"].'/'.trim($tracking_number[$i]).'">'.trim($tracking_number[$i]).'</a>';
 						}
 					}
 
@@ -421,13 +418,12 @@
 						if($tracking_number[$i]!=''){
 							$trackings[] = array($tracking["courier"],trim($tracking_number[$i]));
 
-							//'<a href="https://'.$username.'.aftership.com/'.$tracking["courier"].'/'.trim($tracking_number[$i]).'">'.trim($tracking_number[$i]).'</a>';
 						}
 					}
 
 				}
 
-				$this->data['trackings'] = $trackings;
+				$this->data['trackings'] = array_unique($trackings, SORT_REGULAR);
 
 			]]></add>
         </operation>

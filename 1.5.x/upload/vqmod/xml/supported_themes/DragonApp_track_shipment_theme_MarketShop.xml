@@ -20,7 +20,7 @@
 					$trackings = $order['trackings'];
 					$anchor_trackings = '';
 					foreach($trackings as $row => $innerArray){
-						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'">'.trim($innerArray[1]).'</a>'.', ';
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
 						}
 
 					$anchor_trackings = rtrim($anchor_trackings, ", ");
@@ -40,7 +40,7 @@
 					//$trackings has an array of arrays of courier + tracking
 					$anchor_trackings = '';
 					foreach($trackings as $row => $innerArray){
-						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'">'.trim($innerArray[1]).'</a>'.', ';
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
 						}
 
 					$anchor_trackings = rtrim($anchor_trackings, ", ");

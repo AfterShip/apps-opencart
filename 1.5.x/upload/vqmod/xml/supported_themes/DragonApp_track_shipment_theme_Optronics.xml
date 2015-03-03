@@ -5,10 +5,10 @@
 	<vqmver>2.1.7</vqmver>
 	<author>DragonApp</author>
 
-	<!-- FOR Default theme ONLY -->
-	<!-- FOR Default theme ONLY -->
+	<!-- FOR Optronics theme ONLY -->
+	<!-- FOR Optronics theme ONLY -->
 
- 	<file name="catalog/view/theme/pav_floral/template/account/order_list.tpl">
+ 	<file name="catalog/view/theme/bt_optronics/template/account/order_list.tpl">
 		<operation>
 			<search position="before" error="skip"><![CDATA[
 				<?php echo $text_products; ?>
@@ -19,7 +19,7 @@
 					$trackings = $order['trackings'];
 					$anchor_trackings = '';
 					foreach($trackings as $row => $innerArray){
-						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'">'.trim($innerArray[1]).'</a>'.', ';
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'" style="color:blue" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
 						}
 
 					$anchor_trackings = rtrim($anchor_trackings, ", ");
@@ -29,26 +29,33 @@
 		</operation>
 	</file>
 
- 	<file name="catalog/view/theme/pav_floral/template/account/order_info.tpl">
+
+ 	<file name="catalog/view/theme/bt_optronics/template/account/order_info.tpl">
 		<operation>
 			<search position="before" error="skip"><![CDATA[
-				<?php echo $text_date_added; ?>
+				 <?php foreach ($totals as $total) { ?>
 			]]></search>
 			<add><![CDATA[
-					<?php
+				<?php
 					//$trackings has an array of arrays of courier + tracking
 					$anchor_trackings = '';
 					foreach($trackings as $row => $innerArray){
-						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'">'.trim($innerArray[1]).'</a>'.', ';
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'" style="color:blue" target="_blank">'.trim($innerArray[1]).'</a>'.'<br>';
 						}
-
-					$anchor_trackings = rtrim($anchor_trackings, ", ");
-					echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
 				?>
+				<tr>
+					<td class="model"></td>
+	    			<td class="price"></td>
+        			<td colspan="1"></td>
+        			<td class="right"><b><?php echo $text_tracking_number; ?>:</b></td>
+        			<td class="right"><?php echo $anchor_trackings; ?></td>
+        			<?php if ($products) { ?>
+       					<td></td>
+        			<?php } ?>
+        		<tr/>
+					
 			]]></add>
 		</operation>
 	</file>
-
-
 
 </modification>
