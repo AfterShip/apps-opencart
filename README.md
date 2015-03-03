@@ -52,6 +52,7 @@ In order to support the track shipment at customer order history page,  the foll
 
 ## Documentation
 _(Coming soon)_
+http://www.dragonapp.com/track.html
 
 ## Examples
 _(Coming soon)_
