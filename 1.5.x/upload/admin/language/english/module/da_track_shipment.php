@@ -22,5 +22,7 @@ $_['button_refresh']			= 'Refresh';
 $_['error_permission']    		= 'Warning: You do not have permission to modify module DragonApp Track Shipment!';
 $_['error_key']          		= 'API Key Required';
 $_['error_key_invalid']    		= 'API Key is incorrect';
+$_['error_username']          	= 'Username Required';
+$_['error_username_invalid']    = 'Username is incorrect, only small case letters and numbers are allowed';
 
 ?>

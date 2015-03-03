@@ -49,6 +49,12 @@ class ControllerModuleDaTrackShipment extends Controller
         } else {
             $this->data['error_key'] = '';
         }
+       
+        if (isset($this->error['username'])) {
+            $this->data['error_username'] = $this->error['username'];
+        } else {
+            $this->data['error_username'] = '';
+        }
 
         $this->data['breadcrumbs'] = array();
 
@@ -127,6 +133,18 @@ class ControllerModuleDaTrackShipment extends Controller
                 $result = $this->validateKey($this->request->post['da_track_shipment_after_ship_key']);
                 if ($result != 1) {
                     $this->error['key'] = $result;
+                }
+            }
+        }
+
+        if ($this->request->post['da_track_shipment_status']) {
+            $username = $this->request->post['da_track_shipment_after_ship_username'];
+
+            if ($username == "" || !preg_match("/^[a-z0-9]+$/", $username)) {
+                if($username == ""){
+                     $this->error['username'] = $this->language->get('error_username');
+                }else{
+                     $this->error['username'] = $this->language->get('error_username_invalid');
                 }
             }
         }
