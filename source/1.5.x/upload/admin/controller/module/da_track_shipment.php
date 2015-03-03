@@ -333,13 +333,13 @@ class ControllerModuleDaTrackShipment extends Controller
     public function uninstall()
     {
 
-        //delete the table da_courier
-        $query_drop =  "DROP TABLE IF EXISTS `da_courier`";
-        $this->db->query($query_drop);
+        // //delete the table da_courier
+        // $query_drop =  "DROP TABLE IF EXISTS `da_courier`";
+        // $this->db->query($query_drop);
         
-        //delete the columns slug and tracking_number of order_history
-        $query_drop_columns = "ALTER TABLE `" . DB_PREFIX . "order_history` DROP COLUMN `slug`, DROP COLUMN `tracking_number`";
-        $this->db->query($query_drop_columns);
+        // //delete the columns slug and tracking_number of order_history
+        // $query_drop_columns = "ALTER TABLE `" . DB_PREFIX . "order_history` DROP COLUMN `slug`, DROP COLUMN `tracking_number`";
+        // $this->db->query($query_drop_columns);
 
     }
 

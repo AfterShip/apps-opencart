@@ -9,7 +9,7 @@
 	<!-- FOR Optronics theme ONLY -->
 
 
-	<file name="catalog/view/theme/bt_optronics/template/common/header.tpl">
+<!-- 	<file name="catalog/view/theme/bt_optronics/template/common/header.tpl">
 		<operation>
 			<search position="after" error="skip"><![CDATA[</head>]]></search>
 			<add><![CDATA[
@@ -17,31 +17,55 @@
 			]]></add>
 		</operation>
 	</file>
-
-	<file name="catalog/view/theme/bt_optronics/template/account/order_list.tpl">
+-->
+ 	<file name="catalog/view/theme/bt_optronics/template/account/order_list.tpl">
 		<operation>
-			<search position="after" error="skip"><![CDATA[
-				<b><?php echo $text_total; ?></b> <?php echo $order['total']; ?></div>
+			<search position="before" error="skip"><![CDATA[
+				<?php echo $text_products; ?>
 			]]></search>
 			<add><![CDATA[
-			<div class="shipping-status">
 				<?php
+					//$order['trackings'] has an array of arrays of courier + tracking
 					$trackings = $order['trackings'];
+					$anchor_trackings = '';
+					foreach($trackings as $row => $innerArray){
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'" style="color:blue">'.trim($innerArray[1]).'</a>'.', ';
+						}
 
-					foreach ($trackings as $key => $value) {
-						$track_info = explode("_", $value);
-						echo '<div id="' . $track_info[0] . '-' . $track_info[1] . '" style="white-space:nowrap;padding-bottom: 10px;">';
-						echo '<img src="image/courier/' . $track_info[0] . '.png" /> ';
-						echo '<div class="as-track-button" data-support="true" data-width="100" data-size="small" data-slug="'.trim($track_info[0]).'" data-tracking-number="'.$track_info[1].'"></div>';
-						echo '</div>';
-					}
+					$anchor_trackings = rtrim($anchor_trackings, ", ");
+					echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
 				?>
-			</div>
-
 			]]></add>
 		</operation>
 	</file>
 
 
+ 	<file name="catalog/view/theme/bt_optronics/template/account/order_info.tpl">
+		<operation>
+			<search position="before" error="skip"><![CDATA[
+				 <?php foreach ($totals as $total) { ?>
+			]]></search>
+			<add><![CDATA[
+				<?php
+					//$trackings has an array of arrays of courier + tracking
+					$anchor_trackings = '';
+					foreach($trackings as $row => $innerArray){
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.$innerArray[0].'/'.trim($innerArray[1]).'" style="color:blue">'.trim($innerArray[1]).'</a>'.'<br>';
+						}
+				?>
+				<tr>
+					<td class="model"></td>
+	    			<td class="price"></td>
+        			<td colspan="1"></td>
+        			<td class="right"><b><?php echo $text_tracking_number; ?>:</b></td>
+        			<td class="right"><?php echo $anchor_trackings; ?></td>
+        			<?php if ($products) { ?>
+       					<td></td>
+        			<?php } ?>
+        		<tr/>
+					
+			]]></add>
+		</operation>
+	</file>
 
 </modification>

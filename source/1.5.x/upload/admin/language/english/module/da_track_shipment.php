@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']       		= '<b>DragonApp</b> Track Shipment v1.1.14';
+$_['heading_title']       		= '<b>DragonApp</b> Track Shipment v1.5.0';
 
 // Text
 $_['text_module']         		= 'Modules';
