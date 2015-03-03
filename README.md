@@ -1,4 +1,6 @@
 # apps-opencart
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
 
 ###Introduction
 This extension allow you to add tracking number in your order. You can add unlimited tracking numbers per order.
@@ -30,9 +32,23 @@ In order to support the track shipment at customer order history page,  the foll
 
 ## Getting Started
 
-###Installation
+###Before installation
+* This extension DO NOT overwrite any file.
+* We highly reconmed to make a backup before installing anything.
 
-_(Coming soon)_
+###Installation
+1. If you don't have it installed, install the Vqmod version for Opencart:
+> You can download the Opencart version from [here](https://github.com/vqmod/vqmod/releases) and the instructions to install [here](https://github.com/vqmod/vqmod/wiki/Installing-vQmod-on-OpenCart). To check that the instaltion has been correct you can look up in the folder `app/vqmod/vqcache` , if there are files the installion has been successful.
+2. Download the version from this repository that you need and upload it to the root of your opencart store.
+3. From the themes supported `app/vqmod/xml/supported_themes`, choose the one you need and copy it to the Vqmod xml folder `app/vqmod/xml`, now you should have 3 files:
+   * `vqmod_opencart.xml` --> Change the opencart includes to point to the vqcache library.
+   * `DragonApp_track_shipment.xml` --> Copy and modify the elements we need to the vqcache.
+   * `DragonApp_track_shipment_theme_Default.xml` --> The theme specific file, can be other file depending of the theme you have installed. Will change the user layout so he can access the tracking information. (Since there are differents layout for each theme, we need different themes).
+4. Enter in your admin store and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
+5. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
+   * Create new Aftership account [here](https://www.aftership.com/signup).
+   * Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
+   * Create new Aftership Username [here](https://www.aftership.com/users/profile).
 
 ## Documentation
 _(Coming soon)_
