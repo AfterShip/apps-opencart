@@ -12,13 +12,13 @@
 			<search position="replace">
 				<![CDATA[$this->db->query("INSERT INTO " . DB_PREFIX . "order_history SET order_id = '" . (int)$order_id . "', order_status_id = '" . (int)$data['order_status_id'] . "', notify = '" . (isset($data['notify']) ? (int)$data['notify'] : 0) . "', comment = '" . $this->db->escape(strip_tags($data['comment'])) . "', date_added = NOW()");]]></search>
 			<add><![CDATA[
-                // line 630
+                // line 734
 			]]></add>
 		</operation>
 		<operation>
 			<search position="after"><![CDATA[$order_info = $this->getOrder($order_id);]]></search>
 			<add><![CDATA[
-				// line 632
+				// line 739
 				if ($this->config->get('da_track_shipment_status')) //if enabled the module
 				{
 					$q = "SELECT * FROM `da_courier` WHERE `slug` = '".$this->db->escape($data['courier_slug'])."' LIMIT 1";
@@ -60,7 +60,7 @@
 		<operation>
 			<search position="after"><![CDATA[$language->load('mail/order');]]></search>
 			<add><![CDATA[
-				//Line 649
+				//Line 793
 				$language->load('module/da_track_shipment_order_history');
 			]]></add>
 		</operation>
@@ -68,7 +68,7 @@
 		<operation>
 			<search position="before"><![CDATA[$message .= $language->get('text_footer');]]></search>
 			<add><![CDATA[
-				//Line 671
+				//Line 820
 				if ($this->config->get('da_track_shipment_status') && trim($data['tracking_number']) != '') //if enabled the module
 				{
 
@@ -110,7 +110,7 @@
 		<operation>
 			<search position="after" offset="1"><![CDATA[$mail->send();]]></search>
 			<add><![CDATA[
-      			// line 688
+      			// line 876
 				if ($this->config->get('da_track_shipment_status')) //if enabled the module
 				{
 					$return["error"] = "";
@@ -138,7 +138,7 @@
 			<search position="replace">
 				<![CDATA[$query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added ASC LIMIT " . (int)$start . "," . (int)$limit);]]></search>
 			<add><![CDATA[
-				//Line 692
+				//Line 913
 				$query = $this->db->query("SELECT oh.`date_added`, os.`name` AS `status`, oh.`comment`, oh.`notify`, oh.`tracking_number`, dac.`name`, dac.`slug`, dac.`web_url`
 										FROM " . DB_PREFIX . "order_history oh
 										LEFT JOIN " . DB_PREFIX . "order_status os ON oh.`order_status_id` = os.`order_status_id`
@@ -157,7 +157,7 @@
 		<operation>
 			<search position="after"><![CDATA[public function info() {]]></search>
 			<add><![CDATA[
-				//Line 1338
+				//Line 1336
 				if ($this->config->get('da_track_shipment_status'))
 				{
 					$this->load->language('module/da_track_shipment_order_history');
@@ -177,7 +177,7 @@
 		<operation>
 			<search position="after"><![CDATA[public function history() {]]></search>
 			<add><![CDATA[
-				//Line 2150
+				//Line 2173
 				if ($this->config->get('da_track_shipment_status'))
 				{
 					$this->load->language('module/da_track_shipment_order_history');
@@ -195,7 +195,7 @@
 			<search position="after">
 				<![CDATA[$results = $this->model_sale_order->getOrderHistories($this->request->get['order_id'], ($page - 1) * 10, 10);]]></search>
 			<add><![CDATA[
-				//Line 2184
+				//Line 2227
 				$this->load->model('tool/da_track_shipment');
                 $enabled_couriers = $this->model_tool_da_track_shipment->getEnabledCouriers();
                 $this->data['enabled_couriers'] = $enabled_couriers;
@@ -206,7 +206,7 @@
 		<operation>
 			<search position="after"><![CDATA[$this->data['histories'][] = array(]]></search>
 			<add><![CDATA[
-				//Line 2187
+				//Line 2236
 				'tracking_number' 	=> $result['tracking_number'],
 				'name' 			=> $result['name'],
 				'slug' 			=> $result['slug'],
@@ -220,7 +220,7 @@
 			<search position="replace">
 				<![CDATA[$this->model_sale_order->addOrderHistory($this->request->get['order_id'], $this->request->post);]]></search>
 			<add><![CDATA[
-				//Line 2163
+				//Line 2198
 				$add_order_history_result 	= $this->model_sale_order->addOrderHistory($this->request->get['order_id'], $this->request->post);
 				if ($this->config->get('da_track_shipment_status')) //if enabled the module
 				{
@@ -342,7 +342,7 @@
 				<![CDATA[public function getOrders($start = 0, $limit = 20) {]]>
 			</search>
 			<add>
-				// line 104
+				// line 105
 				public function getOrderStoreId($order_id) {
 				$query = $this->db->query("SELECT `store_id` FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id. "' LIMIT 1");
 
@@ -353,50 +353,13 @@
 	</file>
 
 
-<!-- 	<file name="catalog/controller/account/order.php">
-		<operation>
-			<search position="before"><![CDATA[
-				$this->data['orders'][] = array(
-			]]></search>
-			<add><![CDATA[
-				// line 106
-				$query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
-				FROM  `" . DB_PREFIX . "order_history` oh
-				WHERE oh.order_id ='".$result['order_id']."'");
-
-				$trackings = array();
-
-				$trackings_result = $query->rows;
-
-				foreach ($trackings_result as $tracking) {
-					$tracking_number = explode(",", $tracking["tracking_number"]);
-
-					for ($i = 0; $i < count($tracking_number); $i++) {
-						$trackings[] = $tracking["courier"]."_".trim($tracking_number[$i]);
-					}
-
-				}
-
-			]]></add>
-		</operation>
-
-        <operation>
-            <search position="after"><![CDATA[
-				$this->data['orders'][] = array(
-			]]></search>
-            <add><![CDATA[
-                // line 106
-				'trackings'   => array_unique($trackings),
-			]]></add>
-        </operation> -->
-
 	<file name="catalog/controller/account/order.php">
 		<operation>
 			<search position="before"><![CDATA[
 				$this->data['orders'][] = array(
 			]]></search>
 			<add><![CDATA[
-				// line 106
+				// line 116
 				$query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
 				FROM  `" . DB_PREFIX . "order_history` oh
 				WHERE oh.order_id ='".$result['order_id']."'");
@@ -428,7 +391,7 @@
 				$this->data['orders'][] = array(
 			]]></search>
             <add><![CDATA[
-                // line 141
+                // line 143
                 'username' => $this->config->get('da_track_shipment_after_ship_username'),
  				'trackings'   => array_unique($trackings, SORT_REGULAR),
 			]]></add>
@@ -439,7 +402,7 @@
 				$order_info = $this->model_account_order->getOrder($order_id);
 			]]></search>
             <add><![CDATA[
-				// line 217
+				// line 208
 				$query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
 				FROM  `" . DB_PREFIX . "order_history` oh
 				WHERE oh.slug <> ''
