@@ -6,7 +6,7 @@
     - [Getting Started](#getting-started)
         - [Before installation](#before-installation)
         - [Installation](#installation)
-        - [Upgrade](#upgrade-from 1.1.x,-1.2.X.-1.3.X,-1.4.X-to-1.5.X)
+        - [Upgrade](#upgrade-from-11x-12x-13x-14x-to-15x)
     - [Demo](#demo)
         - [Backend End](#backend-end)
         - [Front End](#front-end)
