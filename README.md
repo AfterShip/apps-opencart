@@ -4,8 +4,8 @@
     - [Features](#features)
     - [Supported themes](#supported-themes)
     - [Getting Started](#getting-started)
-        - [Before installation](#before-installation)
-        - [Installation](#installation)
+        - [Before installation](#before-new-install)
+        - [Installation](#new-install)
         - [Upgrade](#upgrade-from-11x-12x-13x-14x-to-15x)
     - [Demo](#demo)
         - [Backend End](#backend-end)
@@ -44,11 +44,11 @@ The following themes are supported for tracking shipments on the Customer's Orde
 
 ## Getting Started
 
-###Before new installation
+###Before new install
 * This extension DOES NOT overwrite any file.
 * We highly recommend to make a backup before installing anything.
 
-###New installaiton
+###New install
 1. If you don't have it installed, install the Vqmod version for Opencart:
 > You can download the Opencart version from [here](https://github.com/vqmod/vqmod/releases) and the instructions to install [here](https://github.com/vqmod/vqmod/wiki/Installing-vQmod-on-OpenCart). To check that the installation was successful you can look in the folder `app/vqmod/vqcache` , if there are files the installion was successful.
 2. Download the version that you need from this repository and upload it to the root of your opencart store.
