@@ -6,6 +6,7 @@
     - [Getting Started](#getting-started)
         - [Before installation](#before-installation)
         - [Installation](#installation)
+        - [Upgrade](#upgrade-from 1.1.x,-1.2.X.-1.3.X,-1.4.X-to-1.5.X)
     - [Demo](#demo)
         - [Backend End](#backend-end)
         - [Front End](#front-end)
@@ -43,11 +44,11 @@ The following themes are supported for tracking shipments on the Customer's Orde
 
 ## Getting Started
 
-###Before installation
+###Before new installation
 * This extension DOES NOT overwrite any file.
 * We highly recommend to make a backup before installing anything.
 
-###Installation
+###New installaiton
 1. If you don't have it installed, install the Vqmod version for Opencart:
 > You can download the Opencart version from [here](https://github.com/vqmod/vqmod/releases) and the instructions to install [here](https://github.com/vqmod/vqmod/wiki/Installing-vQmod-on-OpenCart). To check that the installation was successful you can look in the folder `app/vqmod/vqcache` , if there are files the installion was successful.
 2. Download the version that you need from this repository and upload it to the root of your opencart store.
@@ -60,6 +61,22 @@ The following themes are supported for tracking shipments on the Customer's Orde
    * Create new Aftership account [here](https://www.aftership.com/signup).
    * Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
    * Create new Aftership Username [here](https://www.aftership.com/users/profile).
+   
+### Upgrade from 1.1.x, 1.2.X. 1.3.X, 1.4.X to 1.5.X
+
+1. Go to `Modules` and click unninstall  `DragonApp Track Shipment`.
+2. Download the version from this repository and upload it to the root of your opencart store.
+3. From the themes supported `app/vqmod/xml/supported_themes`, choose the one you need and copy it to the Vqmod xml folder `app/vqmod/xml`, now you should have 3 files:
+   * `vqmod_opencart.xml` --> Change the opencart includes to point to the vqcache library.
+   * `DragonApp_track_shipment.xml` --> Copy and modify the elements we need to the vqcache.
+   * `DragonApp_track_shipment_theme_Default.xml` --> The theme specific file, can be other file depending on the theme you have installed. This file changes the user layout so users can access the tracking information. (Since there are differents layout for each theme, we need different themes).
+4. Login to your store as Admin and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
+5. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
+   * Create new Aftership account [here](https://www.aftership.com/signup).
+   * Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
+   * Create new Aftership Username [here](https://www.aftership.com/users/profile).
+
+
 
 ## Demo
 
