@@ -103,15 +103,20 @@ The client has the shipping information, he only need to click in any of the tra
 ![](https://cloud.githubusercontent.com/assets/6940389/6477064/9f730de2-c259-11e4-9800-971ed600c19f.png)
 
 ##FAQ and troubleshooting
-1. What is the "AfterShip API Key"?
+* What is the "AfterShip API Key"?
+
 >AfterShip is an online service which help you to TRACK and NOTIFY your customer after the package is shipped.<br>
 It is very useful as you can monitor ALL the shipments in one place.<br>
 The API KEY is used to interact to your Aftership account using the API, so lets say you want to send to Aftership one tracking number, the Key will make us know which account made the request, so que can add it to your account.<br>
 Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
-2. What is the "AfterShip Username"
+
+* What is the "AfterShip Username"
+
 >The Aftership Username allows your customer to access to the tracking information of your account. So if you have the tracking number `1234567890`, you can provide a link like this to the customer and he will be able to access the tracking information: [https://yourusername.aftership.com/1234567890](https://yourusername.aftership.com/1234567890).<br>
 Create new Aftership Username [here](https://www.aftership.com/users/profile).
-3. Which couriers do you support?
+
+* Which couriers do you support?
+
 >Until 2014-11-09, we supported over 220 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## Release History
