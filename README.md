@@ -1,8 +1,18 @@
 # apps-opencart
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-
-###Introduction
+- [apps-opencart](#apps-opencart)
+    - [Introduction](#introduction)
+    - [Features](#features)
+    - [Supported themes](#supported-themes)
+    - [Getting Started](#getting-started)
+        - [Before installation](#before-installation)
+        - [Installation](#installation)
+    - [Demo](#demo)
+        - [Backend End](#backend-end)
+        - [Front End](#front-end)
+    - [Release History](#release-history)
+    - [License](#license)
+    
+##Introduction
 This extension allow you to add tracking number in your order. You can add unlimited tracking numbers per order.
 
 Customer will also get the email about the tracking info.
@@ -10,14 +20,14 @@ Customer will also get the email about the tracking info.
 You need a free account in http://www.aftership.com to manage the trackings, and allow the user to access the tracking information using a link with the name of your store.
 
 
-###Features
+##Features
 1. Each order can have more than one tracking number.
 2. Tracking information in Admin page.
 3. Tracking information in Customer's Order History page
 4. Tracking information in Customer's Order information page
 5. Support over 220 couriers.
 
-###Supported themes
+##Supported themes
 
 In order to support the track shipment at customer order history page,  the following theme are supported:
 
@@ -90,9 +100,6 @@ The client has the shipping information, he only need to click in any of the tra
 
 ##### Click in `view info` ![](https://cloud.githubusercontent.com/assets/6940389/6477271/689f45f8-c25c-11e4-9ccc-6e098efc3e79.png)
 ![](https://cloud.githubusercontent.com/assets/6940389/6477064/9f730de2-c259-11e4-9800-971ed600c19f.png)
-
-## Examples
-_(Coming soon)_
 
 
 ## Release History
