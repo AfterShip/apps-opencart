@@ -9,7 +9,7 @@
     - [Demo](#demo)
         - [Backend End](#backend-end)
         - [Front End](#front-end)
-    - [FAQ and troubleshooting](#rFAQ-and-Troubleshooting)
+    - [FAQ and troubleshooting](#rFAQ-and-troubleshooting)
     - [Release History](#release-history)
     - [License](#license)
     
