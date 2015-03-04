@@ -14,11 +14,11 @@
     - [License](#license)
     
 ##Introduction
-This extension allow you to add tracking number in your order. You can add unlimited tracking numbers per order.
+This extension allows you to add tracking numbers to your order. You can add unlimited tracking numbers per order.
 
-Customer will also get the email about the tracking info.
+With a Premium AfterShip account your customers can get email/SMS notifications with detailed tracking information. 
 
-You need a free account in http://www.aftership.com to manage the trackings, and allow the user to access the tracking information using a link with the name of your store.
+To start you need a free account at http://www.aftership.com to manage the trackings, and allow the your customers to access tracking information using a link with the name of your store.
 
 
 ##Features
@@ -26,11 +26,11 @@ You need a free account in http://www.aftership.com to manage the trackings, and
 2. Tracking information in Admin page.
 3. Tracking information in Customer's Order History page
 4. Tracking information in Customer's Order information page
-5. Support over 220 couriers.
+5. Support over 230 couriers.
 
 ##Supported themes
 
-In order to support the track shipment at customer order history page,  the following theme are supported:
+The following themes are supported for tracking shipments on the Customer's Order History page:
 
 - Default
 - Merkent
@@ -38,24 +38,24 @@ In order to support the track shipment at customer order history page,  the foll
 - Optronics
 - Pav floral
 
- *If you are a theme designer, colaborate with this repo in order to support your theme*
+ *If you are a theme designer, collaborate with this repo in order to support your theme*
 
 
 ## Getting Started
 
 ###Before installation
-* This extension DO NOT overwrite any file.
-* We highly reconmed to make a backup before installing anything.
+* This extension DOES NOT overwrite any file.
+* We highly recommend to make a backup before installing anything.
 
 ###Installation
 1. If you don't have it installed, install the Vqmod version for Opencart:
-> You can download the Opencart version from [here](https://github.com/vqmod/vqmod/releases) and the instructions to install [here](https://github.com/vqmod/vqmod/wiki/Installing-vQmod-on-OpenCart). To check that the instaltion has been correct you can look up in the folder `app/vqmod/vqcache` , if there are files the installion has been successful.
-2. Download the version from this repository that you need and upload it to the root of your opencart store.
+> You can download the Opencart version from [here](https://github.com/vqmod/vqmod/releases) and the instructions to install [here](https://github.com/vqmod/vqmod/wiki/Installing-vQmod-on-OpenCart). To check that the installation was successful you can look in the folder `app/vqmod/vqcache` , if there are files the installion was successful.
+2. Download the version that you need from this repository and upload it to the root of your opencart store.
 3. From the themes supported `app/vqmod/xml/supported_themes`, choose the one you need and copy it to the Vqmod xml folder `app/vqmod/xml`, now you should have 3 files:
    * `vqmod_opencart.xml` --> Change the opencart includes to point to the vqcache library.
    * `DragonApp_track_shipment.xml` --> Copy and modify the elements we need to the vqcache.
-   * `DragonApp_track_shipment_theme_Default.xml` --> The theme specific file, can be other file depending of the theme you have installed. Will change the user layout so he can access the tracking information. (Since there are differents layout for each theme, we need different themes).
-4. Enter in your admin store and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
+   * `DragonApp_track_shipment_theme_Default.xml` --> The theme specific file, can be other file depending on the theme you have installed. This file changes the user layout so users can access the tracking information. (Since there are differents layout for each theme, we need different themes).
+4. Login to your store as Admin and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
 5. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
    * Create new Aftership account [here](https://www.aftership.com/signup).
    * Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
@@ -79,9 +79,9 @@ In order to support the track shipment at customer order history page,  the foll
 
 ![](https://cloud.githubusercontent.com/assets/6940389/6477048/097d6e5e-c259-11e4-97db-958b86b62550.png)
 
-If you input the correct credentials, you should notice how the Enabled carriers appear, this carriers are the ones you have actived in your Aftership account, you can modify them [here](https://www.aftership.com/settings/courier).
+If you input the correct credentials, you should notice now the Enabled carriers appear, these carriers are the ones you have activated in your Aftership account, you can modify them [here](https://www.aftership.com/settings/courier).
 
-The username is very important, will tracking links to it, for example: [https://username.aftership.com/dhl/0123456789](https://username.aftership.com/dhl/123456789) will point to the tracking 123456789 from dhl in your account.
+The username is very important, tracking links will contain it, for example: [https://username.aftership.com/dhl/0123456789](https://username.aftership.com/dhl/123456789) will point to the tracking 123456789 from dhl in your account.
 
 #####In `Sales --> Orders --> View --> Order History tab`
 
@@ -97,7 +97,7 @@ As you can see, you can add to the order tracking numbers and couriers (the cour
 
 ##### After login, visit `My Account --> Order History`
 ![](https://cloud.githubusercontent.com/assets/6940389/6477063/9f469cda-c259-11e4-92ae-e2f6090dc251.png)
-The client has the shipping information, he only need to click in any of the tracking numbers.
+The client has the shipping information, he only needs to click on any of the tracking numbers.
 
 ##### Click in `view info` ![](https://cloud.githubusercontent.com/assets/6940389/6477271/689f45f8-c25c-11e4-9ccc-6e098efc3e79.png)
 ![](https://cloud.githubusercontent.com/assets/6940389/6477064/9f730de2-c259-11e4-9800-971ed600c19f.png)
@@ -117,7 +117,7 @@ Create new Aftership Username [here](https://www.aftership.com/users/profile).
 
 * Which couriers do you support?
 
->Until 2014-11-09, we supported over 220 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
+>Until 2015-03-01, we supported over 230 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## Release History
 ####2014-11-09 v1.5.0
