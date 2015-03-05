@@ -30,6 +30,7 @@ class ControllerModuleDaTrackShipment extends Controller
 
         $this->data['entry_status'] = $this->language->get('entry_status');
         $this->data['entry_courier'] = $this->language->get('entry_courier');
+        $this->data['text_courier_priority'] =$this->language->get('text_courier_priority');
 
         $this->data['button_save'] = $this->language->get('button_save');
         $this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -49,7 +50,7 @@ class ControllerModuleDaTrackShipment extends Controller
         } else {
             $this->data['error_key'] = '';
         }
-       
+
         if (isset($this->error['username'])) {
             $this->data['error_username'] = $this->error['username'];
         } else {
@@ -309,12 +310,12 @@ class ControllerModuleDaTrackShipment extends Controller
         //add two new columns to the database
         $query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "order_history` LIKE 'tracking_number'");
 
-        if ($query->num_rows) { 
+        if ($query->num_rows) {
             //already exist one version of aftership.
-            
+
             $query2 = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "order_history` LIKE 'courier_id'");
-            
-            if ($query2->num_rows) { 
+
+            if ($query2->num_rows) {
                 //exist one version previous to this one, so we have to update the tables
 
                 //first add a column name slug
@@ -354,7 +355,7 @@ class ControllerModuleDaTrackShipment extends Controller
         // //delete the table da_courier
         // $query_drop =  "DROP TABLE IF EXISTS `da_courier`";
         // $this->db->query($query_drop);
-        
+
         // //delete the columns slug and tracking_number of order_history
         // $query_drop_columns = "ALTER TABLE `" . DB_PREFIX . "order_history` DROP COLUMN `slug`, DROP COLUMN `tracking_number`";
         // $this->db->query($query_drop_columns);

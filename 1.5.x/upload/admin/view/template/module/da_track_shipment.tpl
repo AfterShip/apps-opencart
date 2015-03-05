@@ -51,7 +51,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td valign="top"><h3><?php echo $entry_courier; ?></h3></td>
+						<td valign="top"><h3><?php echo $entry_courier; ?></h3><small> <?php echo $text_courier_priority; ?></small></td>
 						<td>
 							<br/>
 							<table>

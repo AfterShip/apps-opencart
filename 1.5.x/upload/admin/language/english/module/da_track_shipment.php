@@ -8,6 +8,7 @@ $_['text_success']        		= 'Success: You have modified module DragonApp Track
 $_['text_get_key']				= '<a target="_blank" href="https://www.aftership.com/">Sign up free</a> to get API key at Apps > API';
 $_['text_get_username']			= '<a target="_blank" href="https://www.aftership.com/users/profile">Choose Username</a> at AfterShip user profile page';
 $_['text_refresh']				= '<a target="_blank" href="https://www.aftership.com/settings/courier">Select carriers</a> at AfterShip settings > couriers';
+$_['text_courier_priority']     = 'Order by Aftership priority';
 
 // Entry
 $_['entry_key']          		= 'AfterShip API Key';
