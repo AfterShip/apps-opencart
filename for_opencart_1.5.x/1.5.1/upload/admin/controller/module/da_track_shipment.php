@@ -336,7 +336,6 @@ class ControllerModuleDaTrackShipment extends Controller
                         $result_query2 = $this->db->query($query_delete_column);
 
                         if($result_query2){
-                            $this->db->query($query_string);
                             $query_drop = "DROP TABLE IF EXISTS `da_courier`";
                             $this->db->query($query_drop);
                             $query_create_couriers = "CREATE TABLE IF NOT EXISTS `da_courier` (`courier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`slug` varchar(255) NOT NULL,`name` varchar(255) NOT NULL,`web_url` varchar(255) NOT NULL,PRIMARY KEY (`courier_id`),UNIQUE KEY `slug` (`slug`),KEY `name` (`name`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
