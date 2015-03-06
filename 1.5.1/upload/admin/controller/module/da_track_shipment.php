@@ -304,6 +304,8 @@ class ControllerModuleDaTrackShipment extends Controller
      */
     public function install()
     {
+        $this->load->language('module/da_track_shipment');
+
         //some system user do not allow this
         //set_time_limit(0);
 
@@ -320,29 +322,52 @@ class ControllerModuleDaTrackShipment extends Controller
 
                 //first add a column name slug
 
-                $query_add_slug = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `slug` varchar(255) NOT NULL DEFAULT '',  ADD INDEX (`slug`)";
-                $this->db->query($query_add_slug);
+                $query_add_slug = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `slug` varchar(255) NOT NULL DEFAULT ''";
+                $result_query = $this->db->query($query_add_slug);
 
-                //populate the slug column
-                $query_populate_slug = "UPDATE `". DB_PREFIX . "order_history` AS oh, `da_courier` AS da SET oh.`slug` = da.`slug` WHERE da.`courier_id` = oh.`courier_id` AND oh.`courier_id` > 0";
-                $this->db->query($query_populate_slug);
+                if($result_query){
+                    //populate the slug column
+                    $query_populate_slug = "UPDATE `". DB_PREFIX . "order_history` AS oh, `da_courier` AS da SET oh.`slug` = da.`slug` WHERE da.`courier_id` = oh.`courier_id` AND oh.`courier_id` > 0";
+                    $result_query1 = $this->db->query($query_populate_slug);
 
-                //delete the column id_courier
-                $query_delete_column = "ALTER TABLE `" . DB_PREFIX . "order_history` DROP COLUMN `courier_id`";
-                $this->db->query($query_delete_column);
+                    if($result_query1){
+                        //delete the column id_courier
+                        $query_delete_column = "ALTER TABLE `" . DB_PREFIX . "order_history` DROP COLUMN `courier_id`";
+                        $result_query2 = $this->db->query($query_delete_column);
 
+                        if($result_query2){
+                            $this->db->query($query_string);
+                            $query_drop = "DROP TABLE IF EXISTS `da_courier`";
+                            $this->db->query($query_drop);
+                            $query_create_couriers = "CREATE TABLE IF NOT EXISTS `da_courier` (`courier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`slug` varchar(255) NOT NULL,`name` varchar(255) NOT NULL,`web_url` varchar(255) NOT NULL,PRIMARY KEY (`courier_id`),UNIQUE KEY `slug` (`slug`),KEY `name` (`name`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+                            $this->db->query($query_create_couriers);
+                        }else{
+
+                            $this->session->data['error'] = $this->language->get('error_db1');
+                        }
+                    }else{
+                        $this->session->data['error'] = $this->language->get('error_db2');
+                    }
+                }else{
+                    $this->session->data['error'] = $this->language->get('error_db3');
+                }
+
+            }else{
+                $this->session->data['error'] = $this->language->get('error_db4');
             }
 
         } else {
-            $query_string = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `slug` varchar(255) NOT NULL DEFAULT '',  ADD `tracking_number` VARCHAR(255) NOT NULL,  ADD INDEX (`slug`), ADD INDEX (  `tracking_number` )";
+            //installation from 0, add 2 columns and create database da_couriers
+            $query_string = "ALTER TABLE `" . DB_PREFIX . "order_history`  ADD `slug` varchar(255) NOT NULL DEFAULT '',  ADD `tracking_number` VARCHAR(255) NOT NULL DEFAULT ''";
 
             $this->db->query($query_string);
+            $query_drop = "DROP TABLE IF EXISTS `da_courier`";
+            $this->db->query($query_drop);
+            $query_create_couriers = "CREATE TABLE IF NOT EXISTS `da_courier` (`courier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`slug` varchar(255) NOT NULL,`name` varchar(255) NOT NULL,`web_url` varchar(255) NOT NULL,PRIMARY KEY (`courier_id`),UNIQUE KEY `slug` (`slug`),KEY `name` (`name`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+            $this->db->query($query_create_couriers);
         }
 
-        $query_drop = "DROP TABLE IF EXISTS `da_courier`";
-        $this->db->query($query_drop);
-        $query_create_couriers = "CREATE TABLE IF NOT EXISTS `da_courier` (`courier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`slug` varchar(255) NOT NULL,`name` varchar(255) NOT NULL,`web_url` varchar(255) NOT NULL,PRIMARY KEY (`courier_id`),UNIQUE KEY `slug` (`slug`),KEY `name` (`name`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
-        $this->db->query($query_create_couriers);
+
     }
 
     /**
@@ -363,39 +388,39 @@ class ControllerModuleDaTrackShipment extends Controller
     }
 
 
-    private function SplitSQL($file, $delimiter = ';')
-    {
-
-
-        $output = array();
-
-        if (is_file($file) === true) {
-            $file = fopen($file, 'r');
-
-            if (is_resource($file) === true) {
-                $query = array();
-
-                while (feof($file) === false) {
-                    $query[] = fgets($file);
-
-                    if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
-                        $query = trim(implode('', $query));
-
-                        $output[] = $query;
-
-                    }
-
-                    if (is_string($query) === true) {
-                        $query = array();
-                    }
-                }
-
-                return $output;
-            }
-        }
-
-        return false;
-    }
+    // private function SplitSQL($file, $delimiter = ';')
+    // {
+    //
+    //
+    //     $output = array();
+    //
+    //     if (is_file($file) === true) {
+    //         $file = fopen($file, 'r');
+    //
+    //         if (is_resource($file) === true) {
+    //             $query = array();
+    //
+    //             while (feof($file) === false) {
+    //                 $query[] = fgets($file);
+    //
+    //                 if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
+    //                     $query = trim(implode('', $query));
+    //
+    //                     $output[] = $query;
+    //
+    //                 }
+    //
+    //                 if (is_string($query) === true) {
+    //                     $query = array();
+    //                 }
+    //             }
+    //
+    //             return $output;
+    //         }
+    //     }
+    //
+    //     return false;
+    // }
 
     public function debug_to_console( $data ) {
 

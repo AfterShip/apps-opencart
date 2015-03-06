@@ -25,5 +25,9 @@ $_['error_key']          		= 'API Key Required';
 $_['error_key_invalid']    		= 'API Key is incorrect';
 $_['error_username']          	= 'Username Required';
 $_['error_username_invalid']    = 'Username is incorrect, only small case letters and numbers are allowed';
+$_['error_db1']					= 'Aftership Database Error, Unable to delete the courier_id column from the order_history table. Please uninstall and install again';
+$_['error_db2']					= 'Aftership Database Error, Couldn\'t migrate from the previos version, unable to update the slugs in the history_table. Please uninstall and install again';
+$_['error_db3']					= 'Aftership Database Error, Aftership didn\' manage to create the column \'slug\' in the order_history table. Please uninstall and install again';
+$_['error_db4']					= 'Aftership Database Error, Aftership already installed in your system, it should work fine';
 
 ?>

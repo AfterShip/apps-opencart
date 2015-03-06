@@ -13,11 +13,11 @@
     - [FAQ and troubleshooting](#faq-and-troubleshooting)
     - [Release History](#release-history)
     - [License](#license)
-    
+
 ##Introduction
 This extension allows you to add tracking numbers to your order. You can add unlimited tracking numbers per order.
 
-With a Premium AfterShip account your customers can get email/SMS notifications with detailed tracking information. 
+With a Premium AfterShip account your customers can get email/SMS notifications with detailed tracking information.
 
 To start you need a free account at http://www.aftership.com to manage the trackings, and allow the your customers to access tracking information using a link with the name of your store.
 
@@ -61,7 +61,7 @@ The following themes are supported for tracking shipments on the Customer's Orde
    * Create new Aftership account [here](https://www.aftership.com/signup).
    * Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
    * Create new Aftership Username [here](https://www.aftership.com/users/profile).
-   
+
 ### Upgrade from 1.1.x, 1.2.X. 1.3.X, 1.4.X to 1.5.X
 
 1. Go to `Modules` and click unninstall  `DragonApp Track Shipment`.
@@ -70,8 +70,9 @@ The following themes are supported for tracking shipments on the Customer's Orde
    * `vqmod_opencart.xml` --> Change the opencart includes to point to the vqcache library.
    * `DragonApp_track_shipment.xml` --> Copy and modify the elements we need to the vqcache.
    * `DragonApp_track_shipment_theme_Default.xml` --> The theme specific file, can be other file depending on the theme you have installed. This file changes the user layout so users can access the tracking information. (Since there are differents layout for each theme, we need different themes).
-4. Login to your store as Admin and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
-5. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
+4. Delete all the files inside the library `app/vqmod/vqcache` (clear all the cache of vqmod);
+5. Login to your store as Admin and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
+6. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
    * Create new Aftership account [here](https://www.aftership.com/signup).
    * Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
    * Create new Aftership Username [here](https://www.aftership.com/users/profile).
@@ -82,7 +83,7 @@ The following themes are supported for tracking shipments on the Customer's Orde
 
 ### Backend End
 [http://demo.dragonapp.com/admin](http://demo.dragonapp.com/admin)
->Login: demo 
+>Login: demo
 
 >Password: demo
 
@@ -108,7 +109,7 @@ As you can see, you can add to the order tracking numbers and couriers (the cour
 
 ### Front End
 [http://demo.dragonapp.com/admin](http://demo.dragonapp.com/admin)
->Login: demo@dragonapp.com 
+>Login: demo@dragonapp.com
 
 >Password: demo
 
@@ -137,6 +138,9 @@ Create new Aftership Username [here](https://www.aftership.com/users/profile).
 >Until 2015-03-01, we supported over 230 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## Release History
+####2014-11-09 v1.5.1
+* Provide feedback when updating the APP
+
 ####2014-11-09 v1.5.0
 * Add Username field
 * Get the enable carriers from the user's account
