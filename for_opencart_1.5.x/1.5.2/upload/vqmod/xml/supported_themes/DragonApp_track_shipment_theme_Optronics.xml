@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>DragonApp Track Shipment Support AfterShip</id>
+	<version>1.5.3.1.013</version>
+	<vqmver>2.1.7</vqmver>
+	<author>DragonApp</author>
+
+	<!-- FOR Optronics theme ONLY -->
+	<!-- FOR Optronics theme ONLY -->
+
+ 	<file name="catalog/view/theme/bt_optronics/template/account/order_list.tpl">
+		<operation>
+			<search position="before" error="skip"><![CDATA[
+				<?php echo $text_products; ?>
+			]]></search>
+			<add><![CDATA[
+				<?php
+					//$order['trackings'] has an array of arrays of courier + tracking
+					$trackings = $order['trackings'];
+					$anchor_trackings = '';
+					foreach($trackings as $row => $innerArray){
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.($innerArray[0] == ''?'':$innerArray[0].'/').trim($innerArray[1]).'" style="color:blue" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
+						}
+
+					$anchor_trackings = rtrim($anchor_trackings, ", ");
+					echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
+				?>
+			]]></add>
+		</operation>
+	</file>
+
+
+ 	<file name="catalog/view/theme/bt_optronics/template/account/order_info.tpl">
+		<operation>
+			<search position="before" error="skip"><![CDATA[
+				 <?php foreach ($totals as $total) { ?>
+			]]></search>
+			<add><![CDATA[
+				<?php
+					//$trackings has an array of arrays of courier + tracking
+					$anchor_trackings = '';
+					foreach($trackings as $row => $innerArray){
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.($innerArray[0] == ''?'':$innerArray[0].'/').trim($innerArray[1]).'" style="color:blue" target="_blank">'.trim($innerArray[1]).'</a>'.'<br>';
+						}
+				?>
+				<tr>
+					<td class="model"></td>
+	    			<td class="price"></td>
+        			<td colspan="1"></td>
+        			<td class="right"><b><?php echo $text_tracking_number; ?>:</b></td>
+        			<td class="right"><?php echo $anchor_trackings; ?></td>
+        			<?php if ($products) { ?>
+       					<td></td>
+        			<?php } ?>
+        		<tr/>
+
+			]]></add>
+		</operation>
+	</file>
+
+</modification>
