@@ -246,11 +246,19 @@ class ControllerModuleDaTrackShipment extends Controller
 
     private function getAftershipCouriers(){
 
+        $api_key = $this->request->post['da_track_shipment_after_ship_key'];
+
+        if (stristr($api_key, ':') !== FALSE) {
+            $keys = explode(",", $api_key);
+            $each_key = explode(":", $keys[1]);
+            $api_key = $each_key[1];
+            // only one key is used, the first one
+        }
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, 'https://api.aftership.com/v4/couriers');
-
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-            'aftership-api-key: ' . $this->request->post['da_track_shipment_after_ship_key'] . '',
+            'aftership-api-key: ' . $api_key . '',
             'Content-Type: application/json'
         ));
 
