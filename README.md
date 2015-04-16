@@ -138,6 +138,9 @@ Create new Aftership Username [here](https://www.aftership.com/users/profile).
 >Until 2015-03-01, we supported over 230 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## Release History
+####2015-04-16 v1.5.3
+* When several stores, get the couriers from Aftership using the first API
+
 ####2015-04-15 v1.5.2
 * Fix issue with multi-store connection
 * Improve tracking-link

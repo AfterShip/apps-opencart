@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>DragonApp Track Shipment Support AfterShip</id>
+	<version>1.5.3.1.013</version>
+	<vqmver>2.1.7</vqmver>
+	<author>DragonApp</author>
+
+	<!-- FOR Bootstrap Merkent theme ONLY -->
+	<!-- FOR Bootstrap Merkent theme ONLY -->
+
+
+ 	<file name="catalog/view/theme/*/template/account/order_list.tpl">
+ 		<operation>
+			<search position="after" error="skip"><![CDATA[
+				<th><?php echo $text_date_added; ?></th>
+			]]></search>
+			<add><![CDATA[
+				<th><?php echo $text_tracking_number; ?></th>
+			]]></add>
+		</operation>
+		<operation>
+			<search position="after" error="skip"><![CDATA[
+				<td><?php echo $order['date_added']; ?></td>
+			]]></search>
+			<add><![CDATA[
+				<td>
+				<?php
+					//$order['trackings'] has an array of arrays of courier + tracking
+					$trackings = $order['trackings'];
+					$anchor_trackings = '';
+					foreach($trackings as $row => $innerArray){
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.($innerArray[0] == ''?'':$innerArray[0].'/').trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.'<br>';
+						}
+
+					echo $anchor_trackings ;
+				?>
+				</td>
+			]]></add>
+		</operation>
+	</file>
+
+ 	<file name="catalog/view/theme/*/template/account/order_info.tpl">
+		<operation>
+			<search position="before" error="skip"><![CDATA[
+				<?php echo $text_date_added; ?>
+			]]></search>
+			<add><![CDATA[
+					<?php
+					//$trackings has an array of arrays of courier + tracking
+					$anchor_trackings = '';
+					foreach($trackings as $row => $innerArray){
+						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.($innerArray[0] == ''?'':$innerArray[0].'/').trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
+						}
+
+					$anchor_trackings = rtrim($anchor_trackings, ", ");
+					echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
+				?>
+			]]></add>
+		</operation>
+	</file>
+
+
+</modification>
