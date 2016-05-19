@@ -53,8 +53,8 @@ The following themes are supported for tracking shipments on the Customer's Orde
 > You can download the Opencart version from [here](https://github.com/vqmod/vqmod/releases) and the instructions to install [here](https://github.com/vqmod/vqmod/wiki/Installing-vQmod-on-OpenCart). To check that the installation was successful you can look in the folder `app/vqmod/vqcache` , if there are files the installion was successful.
 2. Download the version that you need from this repository and upload it to the root of your opencart store.
 3. From the themes supported `app/vqmod/xml/supported_themes`, choose the one you need and copy it to the Vqmod xml folder `app/vqmod/xml`, now you should have 3 files:
-   * `vqmod_opencart.xml` --> Change the opencart includes to point to the vqcache library.
-   * `DragonApp_track_shipment.xml` --> Copy and modify the elements we need to the vqcache.
+   * `vqmod_opencart.xml` --> This file changes the opencart includes to point to the vqcache library.
+   * `DragonApp_track_shipment.xml` --> This file copies and modifies the elements we need to the vqcache.
    * `DragonApp_track_shipment_theme_Default.xml` --> The theme specific file, can be other file depending on the theme you have installed. This file changes the user layout so users can access the tracking information. (Since there are differents layout for each theme, we need different themes).
 4. Login to your store as Admin and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
 5. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
@@ -67,8 +67,8 @@ The following themes are supported for tracking shipments on the Customer's Orde
 1. Go to `Modules` and click unninstall  `DragonApp Track Shipment`.
 2. Download the version from this repository and upload it to the root of your opencart store.
 3. From the themes supported `app/vqmod/xml/supported_themes`, choose the one you need and copy it to the Vqmod xml folder `app/vqmod/xml`, now you should have 3 files:
-   * `vqmod_opencart.xml` --> Change the opencart includes to point to the vqcache library.
-   * `DragonApp_track_shipment.xml` --> Copy and modify the elements we need to the vqcache.
+   * `vqmod_opencart.xml` --> This file changes the opencart includes to point to the vqcache library.
+   * `DragonApp_track_shipment.xml` --> This file copies and modifies the elements we need to the vqcache.
    * `DragonApp_track_shipment_theme_Default.xml` --> The theme specific file, can be other file depending on the theme you have installed. This file changes the user layout so users can access the tracking information. (Since there are differents layout for each theme, we need different themes).
 4. Delete all the files inside the library `app/vqmod/vqcache` (clear all the cache of vqmod);
 5. Login to your store as Admin and go to `Modules --> DragonApp Track Shipment` click Install, and then click `edit`.
