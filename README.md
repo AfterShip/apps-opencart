@@ -42,22 +42,22 @@ The following themes are supported for tracking shipments on the Customer's Orde
 * We highly recommend to make a backup before installing anything.
 
 ###New install
-1. Download the new extension from here (http://www.opencart.com/index.php?route=extension/extension/info&extension_id=8870&filter_search=aftership).
-2. Ensure the downloaded extension filename is ending with .ocmod.zip.
+1. Download the new extension from [here] (http://www.opencart.com/index.php?route=extension/extension/info&extension_id=8870&filter_search=aftership).
+2. Ensure the downloaded extension filename is ending with ```.ocmod.zip```.
 3. Login to your OpenCart store as an admin user.
-4. Ensure you have FTP enabled on your server. Refer here (https://mmosolution.com/How-To-Setup-FTP-For-Opencart.html) on how 5. to enable FTP on your server.
-6. Ensure the FTP user has the correct permissions to read/write the OpenCart directories.
-7. For proper FTP usage, it is recommended to install QuickFix (http://www.opencart.com/index.php?route=extension/extension/info&extension_id=18892).
-8. Go to Extensions > Extension Installer.
-9. Click Upload > select the .ocmod.zip extension you had downloaded earlier > Click Continue.
-10. Go to Extensions > Modifications. Click on the Refresh button. 
-11. Go to Extensions > Modules > AfterShip Track Shipment v2.0 and click Edit
-12. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
+4. Ensure you have FTP enabled on your server. Refer [here] (https://mmosolution.com/How-To-Setup-FTP-For-Opencart.html) on how to enable FTP on your server.
+5. Ensure the FTP user has the correct permissions to read/write the OpenCart directories.
+6. For proper FTP usage, it is recommended to install [QuickFix] (http://www.opencart.com/index.php?route=extension/extension/info&extension_id=18892).
+7. Go to ```Extensions``` > ```Extension Installer```.
+8. Click Upload > select the ```.ocmod.zip``` extension you had downloaded earlier > Click Continue.
+9. Go to ```Extensions > Modifications```. Click on the Refresh button. 
+10. Go to ```Extensions > Modules > AfterShip Track Shipment v2.0``` and click Edit
+11. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
    * Create new Aftership account [here](https://www.aftership.com/signup).
    * Create new Aftership API [here](https://www.aftership.com/apps), install API, and generate one API Key.
    * Create new Aftership Username [here](https://secure.aftership.com/users/profile).
-13. Click on the Refresh button.
-14. Verify that module is Enabled and the Courier List from AfterShip has been updated in OpenCart. 
+12. Click on the Refresh button.
+13. Verify that module is Enabled and the Courier List from AfterShip has been updated in OpenCart. 
 
 
 ##FAQ and troubleshooting
@@ -75,7 +75,7 @@ Create new Aftership Username [here](https://secure.aftership.com/users/profile)
 
 * Which couriers do you support?
 
->Until 2015-03-01, we supported over 230 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
+>Until 2016-06-17, we supported over 350 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## License
 Copyright (c) 2015 Aftership  
