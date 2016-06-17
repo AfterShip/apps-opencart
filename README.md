@@ -42,7 +42,7 @@ The following themes are supported for tracking shipments on the Customer's Orde
 * We highly recommend to make a backup before installing anything.
 
 ###New install
-1. Download the new extension from [here] (http://www.opencart.com/index.php?route=extension/extension/info&extension_id=8870&filter_search=aftership).
+1. Download the new extension from [here](download/aftership.ocmod.zip).
 2. Ensure the downloaded extension filename is ending with ```.ocmod.zip```.
 3. Login to your OpenCart store as an admin user.
 4. Ensure you have FTP enabled on your server. Refer [here] (https://mmosolution.com/How-To-Setup-FTP-For-Opencart.html) on how to enable FTP on your server.
