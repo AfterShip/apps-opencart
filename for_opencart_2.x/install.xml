@@ -2,7 +2,7 @@
 <modification>
     <name>OpenCart Track Shipment Support AfterShip</name>
 	<id>dragonapp_track_shipment_support_aftership</id>
-	<version>2.0</version>
+	<version>2.1</version>
     <link>http://aftership.com</link>
 	<author>AfterShip</author>
 	<code>dragonapp_track_shipment_support_aftership</code>
@@ -502,6 +502,7 @@
 			]]></search>
             <add position="after"><![CDATA[
 				$this->load->language('module/da_tracking_order');
+                $this->load->language('module/da_track_shipment_order_history');
 			]]></add>
         </operation>
 
@@ -512,14 +513,39 @@
 			]]></search>
             <add position="after"><![CDATA[
 			$data['text_tracking_number'] = $this->language->get('text_tracking_number');
-
+            $data['column_tracking_number'] 			= $this->language->get('column_tracking_number');
+            $data['column_courier'] 					= $this->language->get('column_courier');
 			$data['username'] = $this->config->get('da_track_shipment_after_ship_username');
-
+            $data['da_track_shipment_status'] = $this->config->get('da_track_shipment_status');
 			]]></add>
         </operation>
-
-
+        <!-- <operation>
+			<search><![CDATA[$data['histories'][] = array(]]></search>
+			<add position="before"><![CDATA[
+				print_r($result);
+			]]></add>
+		</operation> -->
+        <operation>
+			<search><![CDATA[$data['histories'][] = array(]]></search>
+			<add position="after"><![CDATA[
+				'tracking_number' 	=> $result['tracking_number'],
+				'name' 			=> $result['name'],
+				'slug' 			=> $result['slug'],
+				'order_id' 	=> $this->request->get['order_id'],
+				'web_url'	=> $result['web_url'],
+			]]></add>
+		</operation>
 	</file>
+
+    <file path="catalog/model/account/order.php">
+        <operation>
+			<search>
+				<![CDATA[$query = $this->db->query("SELECT date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added");]]></search>
+			<add position="replace"><![CDATA[
+				$query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify, oh.tracking_number, dac.name, dac.slug, dac.web_url FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id LEFT JOIN da_courier dac ON oh.slug = dac.slug WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added");
+			]]></add>
+		</operation>
+    </file>
 
     <file path="catalog/view/theme/default/template/account/order_list.tpl">
 		<operation>
@@ -558,6 +584,41 @@
 					$anchor_trackings = rtrim($anchor_trackings, ", ");
 					echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
 				?>
+			]]></add>
+		</operation>
+        <operation>
+            <search><![CDATA[
+				<td class="text-left"><?php echo $column_comment; ?></td>
+			]]></search>
+            <add position="after" error="skip"><![CDATA[
+                <?php if ($da_track_shipment_status) { ?>
+                <td class="text-left"><?php echo $column_tracking_number; ?></td>
+                <td class="text-left"><?php echo $column_courier; ?></td>
+                <?php } ?>
+			]]></add>
+		</operation>
+        <operation>
+			<search><![CDATA[<td class="text-left"><?php echo $history['comment']; ?></td>]]></search>
+			<add position="after"><![CDATA[
+				<?php if ($da_track_shipment_status) { ?>
+				<td class="text-left">
+					<?php
+					if ($history['tracking_number']) {
+						$tracking_numbers = explode(",", $history['tracking_number']);
+						for ($i=0;$i<count($tracking_numbers);$i++)
+						{
+							echo '<div data-width="100"><a href="https://'.$username.'.aftership.com/'.trim($tracking_numbers[$i]).'" target="_blank">'.trim($tracking_numbers[$i]).'</a></div>';
+						}
+					}
+					?>
+
+				</td>
+				<td class="center">
+				<?php if ($history['slug']) { ?>
+				<a href="<?php echo $history['web_url']; ?>" target="_blank"><?php echo $history['name']; ?></a>
+				<?php } ?>
+				</td>
+				<?php } ?>
 			]]></add>
 		</operation>
 	</file>
@@ -601,6 +662,41 @@
 				?>
 			]]></add>
 		</operation>
+        <operation>
+            <search><![CDATA[
+				<td class="text-left"><?php echo $column_comment; ?></td>
+			]]></search>
+            <add position="after" error="skip"><![CDATA[
+                <?php if ($da_track_shipment_status) { ?>
+                <td class="text-left"><?php echo $column_tracking_number; ?></td>
+                <td class="text-left"><?php echo $column_courier; ?></td>
+                <?php } ?>
+			]]></add>
+		</operation>
+        <operation>
+			<search><![CDATA[<td class="text-left"><?php echo $history['comment']; ?></td>]]></search>
+			<add position="after"><![CDATA[
+				<?php if ($da_track_shipment_status) { ?>
+				<td class="text-left">
+					<?php
+					if ($history['tracking_number']) {
+						$tracking_numbers = explode(",", $history['tracking_number']);
+						for ($i=0;$i<count($tracking_numbers);$i++)
+						{
+							echo '<div data-width="100"><a href="https://'.$username.'.aftership.com/'.trim($tracking_numbers[$i]).'" target="_blank">'.trim($tracking_numbers[$i]).'</a></div>';
+						}
+					}
+					?>
+
+				</td>
+				<td class="center">
+				<?php if ($history['slug']) { ?>
+				<a href="<?php echo $history['web_url']; ?>" target="_blank"><?php echo $history['name']; ?></a>
+				<?php } ?>
+				</td>
+				<?php } ?>
+			]]></add>
+		</operation>
 	</file>
 
     <file path="catalog/view/theme/pav_floral/template/account/order_list.tpl">
@@ -640,6 +736,41 @@
 					$anchor_trackings = rtrim($anchor_trackings, ", ");
 					echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
 				?>
+			]]></add>
+		</operation>
+        <operation>
+            <search><![CDATA[
+				<td class="text-left"><?php echo $column_comment; ?></td>
+			]]></search>
+            <add position="after" error="skip"><![CDATA[
+                <?php if ($da_track_shipment_status) { ?>
+                <td class="text-left"><?php echo $column_tracking_number; ?></td>
+                <td class="text-left"><?php echo $column_courier; ?></td>
+                <?php } ?>
+			]]></add>
+		</operation>
+        <operation>
+			<search><![CDATA[<td class="text-left"><?php echo $history['comment']; ?></td>]]></search>
+			<add position="after"><![CDATA[
+				<?php if ($da_track_shipment_status) { ?>
+				<td class="text-left">
+					<?php
+					if ($history['tracking_number']) {
+						$tracking_numbers = explode(",", $history['tracking_number']);
+						for ($i=0;$i<count($tracking_numbers);$i++)
+						{
+							echo '<div data-width="100"><a href="https://'.$username.'.aftership.com/'.trim($tracking_numbers[$i]).'" target="_blank">'.trim($tracking_numbers[$i]).'</a></div>';
+						}
+					}
+					?>
+
+				</td>
+				<td class="center">
+				<?php if ($history['slug']) { ?>
+				<a href="<?php echo $history['web_url']; ?>" target="_blank"><?php echo $history['name']; ?></a>
+				<?php } ?>
+				</td>
+				<?php } ?>
 			]]></add>
 		</operation>
 	</file>
