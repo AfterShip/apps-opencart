@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+    <name>OpenCart Track Shipment Support AfterShip</name>
+    <id>dragonapp_track_shipment_support_aftership</id>
+    <version>2.2</version>
+    <link>http://aftership.com</link>
+    <author>AfterShip</author>
+    <code>dragonapp_track_shipment_support_aftership</code>
+    <file path="catalog/model/checkout/order.php">
+        <operation>
+            <search>
+                <![CDATA[public function addOrderHistory($order_id, $order_status_id, $comment = '', $notify = false, $override = false) {]]></search>
+            <add position="replace">
+                <![CDATA[public function addOrderHistory($order_id, $order_status_id, $comment = '', $notify = false, $override = false, $courier_slug = '', $tracking_number = '') {]]></add>
+        </operation>
+        <operation>
+            <search>
+                <![CDATA[$this->db->query("INSERT INTO " . DB_PREFIX . "order_history SET order_id = '" . (int)$order_id . "', order_status_id = '" . (int)$order_status_id . "', notify = '" . (int)$notify . "', comment = '" . $this->db->escape($comment) . "', date_added = NOW()");]]></search>
+            <add position="replace"><![CDATA[
+                if ($this->config->get('module_da_track_shipment_status')) //if enabled the module
+        {
+          $q = "SELECT * FROM `da_courier` WHERE `slug` = '".$this->db->escape($courier_slug)."' LIMIT 1";
+          $q = $this->db->query($q);
+
+          if ($q->num_rows AND trim($tracking_number) != "") {
+              $courier = $q->row;
+              $slug = $courier['slug'];
+            } else {
+                $slug = '';
+            }
+
+            $tracking_number_formated = rtrim($tracking_number, ", ");
+
+                    $send_tracking_number_result = '';
+
+            if ($q->num_rows AND trim($tracking_number) != "") {
+              $this->load->model('extension/tool/da_track_shipment');
+                    $send_tracking_number_result = $this->model_extension_tool_da_track_shipment->sendTrackingNumber($tracking_number, $slug, $order_info['store_id'], $order_id, $this->db->escape($comment));
+            } else {
+                $send_tracking_number_result = 'NO_KEY'; // if no courier or tracking number, treat it as no key
+            }
+
+                    if ($send_tracking_number_result != 'NO_KEY') {
+                        $tracking_number_formated_list = array();
+                        foreach($send_tracking_number_result as $result) {
+                            $tracking_number_formated_list[] = $result['tracking_number'];
+                        }
+                        $tracking_number_formated = implode(' ', $tracking_number_formated_list);
+                    }
+
+          $this->db->query("INSERT INTO " . DB_PREFIX . "order_history SET
+          order_id      = '" . (int)$order_id . "',
+          order_status_id   = '" . (int)$order_status_id . "',
+          notify        = '" . (int)$notify . "',
+          comment       = '" . $this->db->escape($comment) . "',
+          tracking_number   = '" . $this->db->escape($tracking_number_formated) . "',
+          slug        = '" . $this->db->escape($slug) . "',
+          date_added      = NOW()");
+
+
+        }
+        else
+        {
+          $this->db->query("INSERT INTO " . DB_PREFIX . "order_history SET order_id = '" . (int)$order_id . "', order_status_id = '" . (int)$order_status_id . "', notify = '" . (int)$notify . "', comment = '" . $this->db->escape($comment) . "', date_added = NOW()");
+        }
+      ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/api/order.php">
+        <operation>
+            <search>
+                <![CDATA[$this->model_checkout_order->addOrderHistory($order_id, $this->request->post['order_status_id'], $this->request->post['comment'], $this->request->post['notify'], $this->request->post['override']);]]></search>
+            <add position="replace">
+                <![CDATA[$this->model_checkout_order->addOrderHistory($order_id, $this->request->post['order_status_id'], $this->request->post['comment'], $this->request->post['notify'], $this->request->post['override'], $this->request->post['courier_slug'], $this->request->post['tracking_number']);]]></add>
+        </operation>
+    </file>
+
+    <file path="admin/model/sale/order.php">
+        <operation>
+            <search>
+                <![CDATA[$query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added DESC LIMIT " . (int)$start . "," . (int)$limit);]]></search>
+            <add position="replace"><![CDATA[
+        $query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify, oh.tracking_number, dac.name, dac.slug, dac.web_url FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id LEFT JOIN da_courier dac ON oh.slug = dac.slug WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added DESC LIMIT " . (int)$start . "," . (int)$limit);
+      ]]></add>
+        </operation>
+
+    </file>
+
+
+    <file path="admin/controller/sale/order.php">
+        <!-- language files and get company list-->
+        <operation>
+            <search><![CDATA[public function info() {]]></search>
+            <add position="after"><![CDATA[
+        //Line 1336
+        if ($this->config->get('module_da_track_shipment_status'))
+        {
+          if (isset($this->request->get['order_id'])) {
+        $order_id = $this->request->get['order_id'];
+      } else {
+        $order_id = 0;
+      }
+          $this->load->language('extension/module/da_track_shipment_order_history');
+          $data['entry_courier']          = $this->language->get('entry_courier');
+          $data['entry_tracking_number']      = $this->language->get('entry_tracking_number');
+          $data['column_tracking_number']       = $this->language->get('column_tracking_number');
+          $data['column_tracking_number_remark']  = $this->language->get('column_tracking_number_remark');
+          $data['column_courier']           = $this->language->get('column_courier');
+                    $data['module_da_track_shipment_status']  = $this->config->get('module_da_track_shipment_status') || false;
+          $this->load->model('extension/tool/da_track_shipment');
+          $enabled_couriers = $this->model_extension_tool_da_track_shipment->getEnabledCouriers();
+          $data['enabled_couriers'] = $enabled_couriers;
+
+      $trackings = array();
+      $username = $this->config->get('module_da_track_shipment_after_ship_username');
+      $query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
+            FROM  `" . DB_PREFIX . "order_history` oh
+            WHERE oh.slug <> ''
+            AND oh.order_id ='".$order_id."'");
+          $trackings_result = $query->rows;
+          foreach ($trackings_result as $tracking) {
+            $tracking_number = explode(",", $tracking["tracking_number"]);
+
+            for ($i = 0; $i < count($tracking_number); $i++) {
+              if($tracking_number[$i]!=''){
+                $trackings[] = array($tracking["courier"],trim($tracking_number[$i]));
+
+              }
+            }
+          }
+
+          $data['trackings'] = array_unique($trackings, SORT_REGULAR);
+          $anchor_trackings = '';
+          $username = $this->config->get('module_da_track_shipment_after_ship_username');
+          foreach($data['trackings'] as $row => $innerArray){
+            $anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
+          }
+      $data['anchor_trackings'] = rtrim($anchor_trackings, ", ");
+
+        }
+      ]]></add>
+        </operation>
+        <!-- language files and get company list-->
+        <operation>
+            <search><![CDATA[public function history() {]]></search>
+            <add position="after"><![CDATA[
+        //Line 2173
+        $data['module_da_track_shipment_status']  = $this->config->get('module_da_track_shipment_status');
+        if ($this->config->get('module_da_track_shipment_status'))
+        {
+          $this->load->language('extension/module/da_track_shipment_order_history');
+          $data['entry_courier']          = $this->language->get('entry_courier');
+          $data['entry_tracking_number']      = $this->language->get('entry_tracking_number');
+          $data['column_tracking_number']       = $this->language->get('column_tracking_number');
+          $data['column_tracking_number_remark']  = $this->language->get('column_tracking_number_remark');
+          $data['column_courier']           = $this->language->get('column_courier');
+                    $data['module_da_track_shipment_after_ship_username']  = $this->config->get('module_da_track_shipment_after_ship_username');
+        }
+      ]]></add>
+        </operation>
+
+        <!--controller get enable couriers list-->
+        <operation>
+            <search>
+                <![CDATA[$results = $this->model_sale_order->getOrderHistories($this->request->get['order_id'], ($page - 1) * 10, 10);]]></search>
+            <add position="after"><![CDATA[
+        //Line 2227
+        $data['username'] = $this->config->get('module_da_track_shipment_after_ship_username');
+        $this->load->model('extension/tool/da_track_shipment');
+    $enabled_couriers = $this->model_extension_tool_da_track_shipment->getEnabledCouriers();
+    $data['enabled_couriers'] = $enabled_couriers;
+
+
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[$data['histories'][] = array(]]></search>
+            <add position="before"><![CDATA[
+            $tracking_numbers = explode(",", $result['tracking_number']);
+            foreach($tracking_numbers as $key => $val) {
+                $tracking_numbers[$key] = trim($val);
+            }
+
+
+      ]]></add>
+        </operation>
+        <!--controller modify the result-->
+        <operation>
+            <search><![CDATA[$data['histories'][] = array(]]></search>
+            <add position="after"><![CDATA[
+        //Line 2236
+        'tracking_number'   => isset($tracking_numbers) ? $tracking_numbers : array(),
+        'name'      => $result['name'],
+        'slug'      => isset($result['slug']) ? $result['slug'] : '',
+        'order_id'  => $this->request->get['order_id'],
+        'web_url' => $result['web_url'],
+
+
+      ]]></add>
+        </operation>
+
+
+    </file>
+
+
+    <file path="admin/view/template/sale/order_info.twig">
+        <!-- template: add courier and tracking number field -->
+        <operation>
+            <search>
+                <![CDATA[<label class="col-sm-2 control-label" for="input-notify">{{ entry_notify }}</label>]]></search>
+            <add position="before" offset="1"><![CDATA[
+        {% if module_da_track_shipment_status %}
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="courier_slug">{{ entry_courier }}</label>
+                  <div class="col-sm-10">
+                      <select name="courier_slug" class="form-control">
+                      <option value="0">- NA -</option>
+                      {% for courier in enabled_couriers %}
+                          <option value="{{ courier.slug }}">{{ courier.name }}</option>
+                      {% endfor %}
+                      </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="tracking_number">{{ entry_tracking_number }}</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" name="tracking_number" value="" id="tracking_number" />
+                    <br />{{ column_tracking_number_remark }}
+                  </div>
+                </div>
+        {% endif %}
+      ]]></add>
+        </operation>
+        <operation>
+            <!-- add history add tracking number and courier var -->
+            <search>
+                <![CDATA[data: 'order_status_id=' + encodeURIComponent($('select[name=\'order_status_id\']').val()) + '&notify=' + ($('input[name=\'notify\']').prop('checked') ? 1 : 0) + '&override=' + ($('input[name=\'override\']').prop('checked') ? 1 : 0) + '&append=' + ($('input[name=\'append\']').prop('checked') ? 1 : 0) + '&comment=' + encodeURIComponent($('textarea[name=\'comment\']').val()),]]></search>
+            <add position="replace"><![CDATA[
+        data: 'order_status_id=' + encodeURIComponent($('select[name=\'order_status_id\']').val()) + '&notify=' + ($('input[name=\'notify\']').prop('checked') ? 1 : 0) + '&override=' + ($('input[name=\'override\']').prop('checked') ? 1 : 0) + '&append=' + ($('input[name=\'append\']').prop('checked') ? 1 : 0) + '&comment=' + encodeURIComponent($('textarea[name=\'comment\']').val()) + '&tracking_number=' + encodeURIComponent($('input[name=\'tracking_number\']').val()) + '&courier_slug=' + encodeURIComponent($('select[name=\'courier_slug\']').val()),
+      ]]></add>
+        </operation>
+
+        <operation>
+            <search>
+                <![CDATA[$('#history').load('index.php?route=sale/order/history&user_token={{ user_token }}&order_id={{ order_id }}');]]></search>
+            <add position="replace"><![CDATA[
+        $('#history').load('index.php?route=sale/order/history&user_token={{ user_token }}&order_id={{ order_id }}', function(responseText, textStatus, XMLHttpRequest) {
+          $('#aftership-jssdk').remove();
+          (function(e,t,n){var r,i=e.getElementsByTagName(t)[0];if(e.getElementById(n))return;r=e.createElement(t);r.id=n;r.src="//apps.aftership.com/all.js";i.parentNode.insertBefore(r,i)})(document,"script","aftership-jssdk");
+        });
+      ]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[$('#history').load(this.href);]]></search>
+            <add position="replace"><![CDATA[
+        $('#history').load(this.href, function(responseText, textStatus, XMLHttpRequest) {
+          $('#aftership-jssdk').remove();
+          (function(e,t,n){var r,i=e.getElementsByTagName(t)[0];if(e.getElementById(n))return;r=e.createElement(t);r.id=n;r.src="//apps.aftership.com/all.js";i.parentNode.insertBefore(r,i)})(document,"script","aftership-jssdk");
+        });
+      ]]></add>
+        </operation>
+
+
+    </file>
+    <!-- template: order history table -->
+    <file path="admin/view/template/sale/order_history.twig">
+        <operation>
+            <search><![CDATA[<td class="text-left">{{ column_notify }}</td>]]></search>
+            <add position="after"><![CDATA[
+        {% if module_da_track_shipment_status %}
+        <td class="text-left">{{ column_tracking_number }}</td>
+        <td class="text-left">{{ column_courier }}</td>
+        {% endif %}
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[<td class="text-left">{{ history.notify }}</td>]]></search>
+            <add position="after"><![CDATA[
+        {% if module_da_track_shipment_status %}
+        <td class="text-left">
+          {% for history_tracking_number in history.tracking_number %}
+            <div data-width="100"><a href="https://{{ username }}.aftership.com/{{ history_tracking_number }}" target="_blank">{{ history_tracking_number }}</a></div>
+          {% endfor %}
+
+        </td>
+        <td class="center">
+          {% if history.slug %}
+
+        <a href="{{ history.web_url }}" target="_blank">{{ history.name }}</a>
+          {% endif %}
+        </td>
+        {% endif %}
+      ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/model/account/order.php">
+        <!--order model: add tracking number on add order history-->
+        <operation>
+            <search>
+                <![CDATA[public function getOrders($start = 0, $limit = 20) {]]>
+            </search>
+            <add position="before">
+                // line 105
+                public function getOrderStoreId($order_id) {
+                $query = $this->db->query("SELECT `store_id` FROM `" . DB_PREFIX . "order` WHERE order_id = '" .
+                (int)$order_id. "' LIMIT 1");
+
+                return $query->rows;
+                }
+            </add>
+        </operation>
+    </file>
+
+
+    <file path="catalog/controller/account/order.php">
+        <operation>
+            <search><![CDATA[
+        $data['orders'][] = array(
+      ]]></search>
+            <add position="before"><![CDATA[
+        // line 116
+        $query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
+        FROM  `" . DB_PREFIX . "order_history` oh
+        WHERE oh.order_id ='".$result['order_id']."'");
+
+        $trackings = array();
+
+        $trackings_result = $query->rows;
+        $string_tracking_numbers = '';
+
+        foreach ($trackings_result as $tracking) {
+          $tracking_number = explode(",", $tracking["tracking_number"]);
+
+          for ($i = 0; $i < count($tracking_number); $i++) {
+            if($tracking_number[$i]!=''){
+              $trackings[] = array($tracking["courier"],trim($tracking_number[$i]));
+            }
+          }
+
+        }
+
+      ]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[
+        $data['orders'][] = array(
+      ]]></search>
+            <add position="after"><![CDATA[
+                // line 143
+                'username' => $this->config->get('module_da_track_shipment_after_ship_username'),
+        'trackings'   => array_unique($trackings, SORT_REGULAR),
+      ]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[
+        $order_info = $this->model_account_order->getOrder($order_id);
+      ]]></search>
+            <add position="before"><![CDATA[
+        // line 208
+        $query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
+        FROM  `" . DB_PREFIX . "order_history` oh
+        WHERE oh.slug <> ''
+        AND oh.order_id ='".$order_id."'");
+
+        $trackings = array();
+
+        $trackings_result = $query->rows;
+        $username = $this->config->get('module_da_track_shipment_after_ship_username');
+
+
+        foreach ($trackings_result as $tracking) {
+          $tracking_number = explode(",", $tracking["tracking_number"]);
+
+          for ($i = 0; $i < count($tracking_number); $i++) {
+            if($tracking_number[$i]!=''){
+              $trackings[] = array($tracking["courier"],trim($tracking_number[$i]));
+
+            }
+          }
+
+        }
+        $anchor_trackings = '';
+        $data['trackings'] = array_unique($trackings, SORT_REGULAR);
+        foreach($data['trackings']  as $key => $val) {
+            $anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.trim($val[1]).'" target="_blank">'.trim($val[1]).'</a>'.', ';
+        }
+        $data['anchor_trackings'] = rtrim($anchor_trackings, ", ");
+        $data['module_da_track_shipment_status'] = $this->config->get('module_da_track_shipment_status');
+
+      ]]></add>
+        </operation>
+
+        <operation>
+            <!-- this should appear twice -->
+
+            <search><![CDATA[
+        $this->load->language('account/order');
+      ]]></search>
+            <add position="after"><![CDATA[
+        $this->load->language('extension/module/da_tracking_order');
+                $this->load->language('extension/module/da_track_shipment_order_history');
+      ]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[
+        $data['header'] = $this->load->controller('common/header');
+      ]]></search>
+            <add position="after"><![CDATA[
+      $data['text_tracking_number'] = $this->language->get('text_tracking_number');
+            $data['column_tracking_number']       = $this->language->get('column_tracking_number');
+            $data['column_courier']           = $this->language->get('column_courier');
+      $data['username'] = $this->config->get('module_da_track_shipment_after_ship_username');
+            $data['module_da_track_shipment_status'] = $this->config->get('module_da_track_shipment_status');
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[$data['histories'][] = array(]]></search>
+            <add position="before"><![CDATA[
+                  $tracking_numbers = array();
+                  if ($result['tracking_number']) {
+                    $tracking_numbers = explode(",", $result['tracking_number']);
+                    for ($i=0;$i<count($tracking_numbers);$i++)
+                    {
+                        $tracking_numbers[$i] = trim($tracking_numbers[$i]);
+                    }
+                  }
+
+                ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[$data['histories'][] = array(]]></search>
+            <add position="after"><![CDATA[
+        'tracking_numbers'   => $tracking_numbers,
+        'name'      => $result['name'],
+        'slug'      => $result['slug'],
+        'order_id'  => $this->request->get['order_id'],
+        'web_url' => $result['web_url'],
+      ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/model/account/order.php">
+        <operation>
+            <search>
+                <![CDATA[$query = $this->db->query("SELECT date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added");]]></search>
+            <add position="replace"><![CDATA[
+        $query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify, oh.tracking_number, dac.name, dac.slug, dac.web_url FROM " . DB_PREFIX . "order_history oh LEFT JOIN " . DB_PREFIX . "order_status os ON oh.order_status_id = os.order_status_id LEFT JOIN da_courier dac ON oh.slug = dac.slug WHERE oh.order_id = '" . (int)$order_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added");
+      ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/view/theme/default/template/account/order_list.twig">
+
+    </file>
+
+    <file path="catalog/view/theme/default/template/account/order_info.twig">
+        <operation>
+            <search><![CDATA[
+        {{ text_date_added }}
+      ]]></search>
+            <add position="before" error="skip"><![CDATA[
+        {% if module_da_track_shipment_status %}
+            {{ text_tracking_number }} </b> {{ anchor_trackings }} <br/>
+        {% endif %}
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[
+        <td class="text-left">{{ column_comment }}</td>
+      ]]></search>
+            <add position="after" error="skip"><![CDATA[
+                {% if module_da_track_shipment_status %}
+                <td class="text-left">{{ column_tracking_number }}</td>
+                <td class="text-left">{{ column_courier }}</td>
+                {% endif %}
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[<td class="text-left">{{ history.comment }}</td>]]></search>
+            <add position="after"><![CDATA[
+        {% if module_da_track_shipment_status %}
+        <td class="text-left">
+          {% for tracking_number in history.tracking_numbers %}
+              <div data-width="100"><a href="https://{{ username }}.aftership.com/{{ tracking_number }}" target="_blank">{{ tracking_number }}</a></div>
+          {% endfor %}
+
+
+        </td>
+        <td class="center">
+        {% if history.slug %}
+        <a href="{{ history.web_url }}" target="_blank">{{ history.name }}</a>
+        {% endif %}
+        </td>
+        {% endif %}
+      ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/view/theme/marketshop/template/account/order_info.twig">
+        <operation>
+            <search><![CDATA[
+        {{ text_date_added }}
+      ]]></search>
+            <add position="before" error="skip"><![CDATA[
+          <?php
+          //$trackings has an array of arrays of courier + tracking
+          $anchor_trackings = '';
+          foreach($trackings as $row => $innerArray){
+            $anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
+          }
+
+          $anchor_trackings = rtrim($anchor_trackings, ", ");
+          echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
+        ?>
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[
+        <td class="text-left">{{ column_comment }}</td>
+      ]]></search>
+            <add position="after" error="skip"><![CDATA[
+                {% if module_da_track_shipment_status %}
+                <td class="text-left">{{ column_tracking_number }}</td>
+                <td class="text-left">{{ column_courier }}</td>
+                {% endif %}
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[<td class="text-left">{{ history.comment }}</td>]]></search>
+            <add position="after"><![CDATA[
+        {% if module_da_track_shipment_status %}
+        <td class="text-left">
+          {% for tracking_number in history.tracking_numbers %}
+              <div data-width="100"><a href="https://{{ username }}.aftership.com/{{ tracking_number }}" target="_blank">{{ tracking_number }}</a></div>
+          {% endfor %}
+
+
+        </td>
+        <td class="center">
+        {% if history.slug %}
+        <a href="{{ history.web_url }}" target="_blank">{{ history.name }}</a>
+        {% endif %}
+        </td>
+        {% endif %}
+      ]]></add>
+        </operation>
+    </file>
+
+    <file path="catalog/view/theme/pav_floral/template/account/order_info.twig">
+        <operation>
+            <search><![CDATA[
+        {{ text_date_added }}
+      ]]></search>
+            <add position="before" error="skip"><![CDATA[
+      {{ text_tracking_number }} </b> {{ anchor_trackings }} <br/>
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[
+        <td class="text-left">{{ column_comment }}</td>
+      ]]></search>
+            <add position="after" error="skip"><![CDATA[
+                {% if module_da_track_shipment_status %}
+                <td class="text-left">{{ column_tracking_number }}</td>
+                <td class="text-left">{{ column_courier }}</td>
+                {% endif %}
+      ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[<td class="text-left">{{ history.comment }}</td>]]></search>
+            <add position="after"><![CDATA[
+        {% if module_da_track_shipment_status %}
+        <td class="text-left">
+          {% for tracking_number in history.tracking_numbers %}
+              <div data-width="100"><a href="https://{{ username }}.aftership.com/{{ tracking_number }}" target="_blank">{{ tracking_number }}</a></div>
+          {% endfor %}
+
+
+        </td>
+        <td class="center">
+        {% if history.slug %}
+        <a href="{{ history.web_url }}" target="_blank">{{ history.name }}</a>
+        {% endif %}
+        </td>
+        {% endif %}
+      ]]></add>
+        </operation>
+    </file>
+
+
+</modification>
