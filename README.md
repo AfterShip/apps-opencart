@@ -48,7 +48,7 @@ The following themes are supported for tracking shipments on the Customer's Orde
 4. Go to ```Extensions``` > ```Extension Installer```.
 5. Click Upload > select the ```.ocmod.zip``` extension you had downloaded earlier > Click Continue.
 6. Go to ```Extensions > Modifications```. Click on the Refresh button. 
-7. Go to ```ashboard > Settings > Theme```. Click on the Refresh button. 
+7. Go to ```Dashboard > Settings > Theme```. Click on the Refresh button. 
 8. Go to ```Extensions > Extensions ```. Choose Modules, Click on the AfterShip Track Shipment v2.2 install and click Edit
 9. Once you are inside, enable the App, insert your Aftership API key and your username. If you don't have Aftership account, API or Username. Follow the next steps:
    * Create new Aftership account [here](https://accounts.aftership.com/register).

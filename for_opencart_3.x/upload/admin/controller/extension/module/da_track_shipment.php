@@ -23,13 +23,10 @@ class ControllerExtensionModuleDaTrackShipment extends Controller
         }
 
         $data['heading_title'] = $this->language->get('heading_title');
-
         $data['text_enabled'] = $this->language->get('text_enabled');
         $data['text_disabled'] = $this->language->get('text_disabled');
-
         $data['entry_key'] = $this->language->get('entry_key');
         $data['entry_username'] = $this->language->get('entry_username');
-
         $data['entry_status'] = $this->language->get('entry_status');
         $data['entry_courier'] = $this->language->get('entry_courier');
         $data['text_courier_priority'] = $this->language->get('text_courier_priority');
@@ -183,9 +180,7 @@ class ControllerExtensionModuleDaTrackShipment extends Controller
 
             for ($i = 0; $i < sizeof($keys); $i++) {
                 $each_key = explode(":", $keys[$i]);
-
                 $result = $this->validateKeyCurl($each_key[1]);
-
                 if ($result === true) {
                     return $result;
                 } else {
@@ -341,10 +336,6 @@ class ControllerExtensionModuleDaTrackShipment extends Controller
     public function install()
     {
         $this->load->language('extension/module/da_track_shipment');
-
-        //some system user do not allow this
-        //set_time_limit(0);
-
         //add two new columns to the database
         $query = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "order_history` LIKE 'tracking_number'");
         $this->debug_to_console($query->num_rows);
@@ -408,8 +399,10 @@ class ControllerExtensionModuleDaTrackShipment extends Controller
 
     public function uninstall()
     {
-//        $this->load->model('setting/setting');
-//        $this->model_setting_setting->deleteSetting('da_track_shipment');
+
+        $sql = "TRUNCATE TABLE `da_courier`";
+        $this->db->query($sql);
+
     }
 
     public function debug_to_console($data)
