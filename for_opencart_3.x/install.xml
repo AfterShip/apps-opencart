@@ -35,7 +35,7 @@
 
             if ($q->num_rows AND trim($tracking_number) != "") {
               $this->load->model('extension/tool/da_track_shipment');
-                    $send_tracking_number_result = $this->model_extension_tool_da_track_shipment->sendTrackingNumber($tracking_number, $slug, $order_info['store_id'], $order_id, $this->db->escape($comment));
+              $send_tracking_number_result = $this->model_extension_tool_da_track_shipment->sendTrackingNumber($tracking_number, $slug, $order_info['store_id'], $order_id, $this->db->escape($comment));
             } else {
                 $send_tracking_number_result = 'NO_KEY'; // if no courier or tracking number, treat it as no key
             }
@@ -97,24 +97,24 @@
         if ($this->config->get('module_da_track_shipment_status'))
         {
           if (isset($this->request->get['order_id'])) {
-        $order_id = $this->request->get['order_id'];
-      } else {
-        $order_id = 0;
-      }
+            $order_id = $this->request->get['order_id'];
+          } else {
+            $order_id = 0;
+          }
           $this->load->language('extension/module/da_track_shipment_order_history');
           $data['entry_courier']          = $this->language->get('entry_courier');
           $data['entry_tracking_number']      = $this->language->get('entry_tracking_number');
           $data['column_tracking_number']       = $this->language->get('column_tracking_number');
           $data['column_tracking_number_remark']  = $this->language->get('column_tracking_number_remark');
           $data['column_courier']           = $this->language->get('column_courier');
-                    $data['module_da_track_shipment_status']  = $this->config->get('module_da_track_shipment_status') || false;
+          $data['module_da_track_shipment_status']  = $this->config->get('module_da_track_shipment_status') || false;
           $this->load->model('extension/tool/da_track_shipment');
           $enabled_couriers = $this->model_extension_tool_da_track_shipment->getEnabledCouriers();
           $data['enabled_couriers'] = $enabled_couriers;
 
-      $trackings = array();
-      $username = $this->config->get('module_da_track_shipment_after_ship_username');
-      $query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
+          $trackings = array();
+          $username = $this->config->get('module_da_track_shipment_after_ship_username');
+          $query = $this->db->query("SELECT oh.slug AS courier, oh.tracking_number
             FROM  `" . DB_PREFIX . "order_history` oh
             WHERE oh.slug <> ''
             AND oh.order_id ='".$order_id."'");
@@ -136,7 +136,7 @@
           foreach($data['trackings'] as $row => $innerArray){
             $anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
           }
-      $data['anchor_trackings'] = rtrim($anchor_trackings, ", ");
+          $data['anchor_trackings'] = rtrim($anchor_trackings, ", ");
 
         }
       ]]></add>

@@ -18,15 +18,15 @@ class ModelExtensionToolDaTrackShipment extends Model
 	public function sendTrackingNumber($tracking_number, $slug, $store_id = 0, $order_id, $comment) {
 		$store_key = '';
 
-		if ($this->config->get('module_module_da_track_shipment_after_ship_key') == "") {
+		if ($this->config->get('module_da_track_shipment_after_ship_key') == "") {
 			return 'NO_KEY';
 		} else {
-			if (stristr($this->config->get('module_module_da_track_shipment_after_ship_key'), ':') === FALSE) {
+			if (stristr($this->config->get('module_da_track_shipment_after_ship_key'), ':') === FALSE) {
 				// only one key is used, run the key here
-				$store_key = $this->config->get('module_module_da_track_shipment_after_ship_key');
+				$store_key = $this->config->get('module_da_track_shipment_after_ship_key');
 			} else {
 				// multi key is found
-				$keys = explode(",", $this->config->get('module_module_da_track_shipment_after_ship_key'));
+				$keys = explode(",", $this->config->get('module_da_track_shipment_after_ship_key'));
 
 				for ($i = 0; $i < sizeof($keys); $i++) {
 					$each_key = explode(":", $keys[$i]);

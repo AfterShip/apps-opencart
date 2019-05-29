@@ -9,7 +9,7 @@
     - [FAQ and troubleshooting](#faq-and-troubleshooting)
     - [License](#license)
 
-##Introduction
+## Introduction
 This extension allows you to add tracking numbers to your order. You can add unlimited tracking numbers per order.
 
 With a Premium AfterShip account your customers can get email/SMS notifications with detailed tracking information.
@@ -17,14 +17,14 @@ With a Premium AfterShip account your customers can get email/SMS notifications 
 To start you need a free account at http://www.aftership.com to manage the trackings, and allow the your customers to access tracking information using a link with the name of your store.
 
 
-##Features
+## Features
 1. Each order can have more than one tracking number.
 2. Tracking information in Admin page.
 3. Tracking information in Customer's Order History page
 4. Tracking information in Customer's Order information page
 5. Support over 544 couriers.
 
-##Supported themes
+## Supported themes
 
 The following themes are supported for tracking shipments on the Customer's Order History page:
 
@@ -37,11 +37,11 @@ The following themes are supported for tracking shipments on the Customer's Orde
 
 ## Getting Started
 
-###Before new install
+### Before new install
 * This extension DOES NOT overwrite any file.
 * We highly recommend to make a backup before installing anything.
 
-###New install
+### New install
 1. Download the new extension from [here](download/aftership.ocmod.zip).
 2. Ensure the downloaded extension filename is ending with ```.ocmod.zip```.
 3. Login to your OpenCart store as an admin user.
@@ -58,7 +58,7 @@ The following themes are supported for tracking shipments on the Customer's Orde
 11. Verify that module is Enabled and the Courier List from AfterShip has been updated in OpenCart. 
 
 
-##FAQ and troubleshooting
+## FAQ and troubleshooting
 * What is the "AfterShip API Key"?
 
 >AfterShip is an online service which help you to TRACK and NOTIFY your customer after the package is shipped.<br>
