@@ -135,6 +135,8 @@ class ControllerModuleDaTrackShipment extends Controller
                 if ($result != 1) {
                     $this->error['key'] = $result;
                 }
+            }else {
+                $this->error['key'] = $this->language->get('error_key_invalid');
             }
         }
 

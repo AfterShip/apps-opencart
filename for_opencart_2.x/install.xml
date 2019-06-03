@@ -301,7 +301,7 @@
 		<operation>
 			<search><![CDATA[<label class="col-sm-2 control-label" for="input-notify"><?php echo $entry_notify; ?></label>]]></search>
 			<add position="before" offset="1"><![CDATA[
-				<?php if ($da_track_shipment_status) { ?>
+				<?php if (isset($da_track_shipment_status)) { ?>
                 <div class="form-group">
                   <label class="col-sm-2 control-label" for="courier_slug"><?php echo $entry_courier; ?></label>
                   <div class="col-sm-10">
@@ -575,14 +575,16 @@
 			]]></search>
 			<add position="before" error="skip"><![CDATA[
 					<?php
-					//$trackings has an array of arrays of courier + tracking
-					$anchor_trackings = '';
-					foreach($trackings as $row => $innerArray){
-						$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
-					}
+					if ($da_track_shipment_status) {
+						//$trackings has an array of arrays of courier + tracking
+						$anchor_trackings = '';
+						foreach($trackings as $row => $innerArray){
+							$anchor_trackings .= '<a href="https://'.$username.'.aftership.com/'.trim($innerArray[1]).'" target="_blank">'.trim($innerArray[1]).'</a>'.', ';
+						}
 
-					$anchor_trackings = rtrim($anchor_trackings, ", ");
-					echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
+						$anchor_trackings = rtrim($anchor_trackings, ", ");
+						echo '<b>'.$text_tracking_number . ' </b>'. $anchor_trackings .'<br/>';
+					}
 				?>
 			]]></add>
 		</operation>
