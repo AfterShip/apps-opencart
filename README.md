@@ -138,6 +138,13 @@ Create new Aftership Username [here](https://www.aftership.com/users/profile).
 >Until 2015-03-01, we supported over 230 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## Release History
+
+####2019-06-04 v1.5.4
+* Remove tracking page link when uninstall the extension
+* Prevent submit when using empty "AfterShip API Key"
+* Remove html tag `<b>` in extension title
+* Change the "AfterShip Username" obtain link 
+
 ####2015-04-16 v1.5.3
 * When several stores, get the couriers from Aftership using the first API
 
@@ -241,5 +248,5 @@ Create new Aftership Username [here](https://www.aftership.com/users/profile).
 * First Release
 
 ## License
-Copyright (c) 2015 Aftership  
+Copyright (c) 2019 AfterShip  
 Licensed under the MIT license.
