@@ -7,6 +7,7 @@
         - [Before new install](#before-new-install)
         - [Install](#new-install)
     - [FAQ and troubleshooting](#faq-and-troubleshooting)
+    - [Release History](#release-history)
     - [License](#license)
 
 ## Introduction
@@ -76,6 +77,10 @@ Create new Aftership Username [here](https://secure.aftership.com/users/profile)
 * Which couriers do you support?
 
 >Until 2019-06-03, we supported over 540 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
+
+## Release History
+#### 2019-06-03 v2.1.1
+* Fix AfterShip API Key can be empty, fix uninstall extension error
 
 ## License
 Copyright (c) 2019 Aftership  
