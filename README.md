@@ -41,6 +41,8 @@ The following themes are supported for tracking shipments on the Customer's Orde
 ### Before new install
 * This extension DOES NOT overwrite any file.
 * We highly recommend to make a backup before installing anything.
+* for_opencart_2.x supports opencart 2.0/2.1/2.2
+* for_opencart_2.3 supports opencart 2.3
 
 ### New install
 1. Download the new extension from [here](download/aftership.ocmod.zip).
