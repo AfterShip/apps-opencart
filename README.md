@@ -41,6 +41,8 @@ The following themes are supported for tracking shipments on the Customer's Orde
 ### Before new install
 * This extension DOES NOT overwrite any file.
 * We highly recommend to make a backup before installing anything.
+* for_opencart_2.x supports opencart 2.0/2.1/2.2
+* for_opencart_2.3 supports opencart 2.3
 
 ### New install
 1. Download the new extension from [here](download/aftership.ocmod.zip).
@@ -79,6 +81,10 @@ Create new Aftership Username [here](https://secure.aftership.com/users/profile)
 >Until 2019-06-03, we supported over 540 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## Release History
+
+#### 2019-06-06 v2.3.0
+* Support opencart version 2.3
+
 #### 2019-06-03 v2.1.1
 * Fix AfterShip API Key can be empty, fix uninstall extension error
 
