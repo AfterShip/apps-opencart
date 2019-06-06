@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title'] = 'AfterShip Track Shipment v2.2';
+$_['heading_title'] = 'AfterShip Track Shipment v3.0.0';
 
 // Text
 $_['text_module'] = 'Modules';

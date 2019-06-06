@@ -7,6 +7,7 @@
         - [Before new install](#before-new-install)
         - [Install](#new-install)
     - [FAQ and troubleshooting](#faq-and-troubleshooting)
+    - [Release History](#release-history)
     - [License](#license)
 
 ## Introduction
@@ -74,6 +75,10 @@ Create new Aftership Username [here](https://accounts.aftership.com/brand-settin
 * Which couriers do you support?
 
 >Until 2019-05-29, we supported over 544 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
+
+## Release History
+#### 2019-05-29 v3.0.0
+Support opencart version 3.0
 
 ## License
 Copyright (c) 2019 Aftership  
