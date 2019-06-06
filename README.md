@@ -79,6 +79,10 @@ Create new Aftership Username [here](https://secure.aftership.com/users/profile)
 >Until 2019-06-03, we supported over 540 couriers, detail please check at:[http://www.aftership.com](http://www.aftership.com)
 
 ## Release History
+
+#### 2019-06-06 v2.3.0
+* Support opencart version 2.3
+
 #### 2019-06-03 v2.1.1
 * Fix AfterShip API Key can be empty, fix uninstall extension error
 
